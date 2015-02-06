@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 class ofApp : public ofBaseApp{
+	//Hello
 
 	public:
 		void setup();
