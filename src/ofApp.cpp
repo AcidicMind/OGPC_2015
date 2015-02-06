@@ -1,4 +1,4 @@
-include "ofApp.h"
+#include "ofApp.h"
 void board::boardDrawer ()
  {
     for (int i=0; i<N; i++)
