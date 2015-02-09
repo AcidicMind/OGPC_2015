@@ -5,15 +5,17 @@ class board
 {
     public:
     //Enemy enemy1;
+    int gapSize = 5;
     void boardDrawer();
     void tileSetup();
     void playerController();
-    int squareSize=50;
-    int playerx=0;
-    int Previous=0;
-    int playery=0;
-    int wallcount=0;
-    int key=0;
+    int squareSize = 50;
+    int playerx = 0;
+    int Previous = 0;
+    int playery = 0;
+    int wallcount = 0;
+    int key = 0; //key pressed
+    int keyCount = 0;//number of keys -- supposed to be only one
     typedef vector< vector<int> > Matrix;
     typedef vector<int> Row;
     vector<int>wall;
