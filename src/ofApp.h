@@ -4,24 +4,26 @@
 class board
 {
     public:
-    //Enemy enemy1;
-    int gapSize = 5;
     void boardDrawer();
     void tileSetup();
     void playerController();
-    int squareSize = 50;
     int playerx = 0;
-    int Previous = 0;
     int playery = 0;
+    int Previous = 0;
     int wallcount = 0;
     int key = 0; //key pressed
-    int keyCount = 0;//number of keys -- supposed to be only one
+    int keyCount = 0;//number of keys checker -- supposed to be only one
+    int exitCount = 0;//number of exits checker -- supposed to be only one
+    bool hasKey = false;//do we have the key yet???
+    const size_t N = 12; // the dimension of the matrix
+    int gapSize = 5;
+    int squareSize = 60;
     typedef vector< vector<int> > Matrix;
     typedef vector<int> Row;
     vector<int>wall;
-    const size_t N = 10; // the dimension of the matrix
     Matrix matrix;
     Matrix level;
+    //Enemy enemy1;
 };
 //class Enemy
 //{
