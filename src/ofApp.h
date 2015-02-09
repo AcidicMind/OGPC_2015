@@ -35,7 +35,7 @@ class board
 //};
 class ofApp : public ofBaseApp{
 
-	public:
+	public://Hi
 		void setup();
 		void update();
 		void draw();
