@@ -26,12 +26,25 @@ void board::boardDrawer ()
             {
                 ofSetColor(255,99,51);//exit
             }
-            if(matrix[i][ii] == 5)
+            if (matrix[i][ii] == 5)
             {
                 ofSetColor(0,0,0);//player
 
             }
+            if (matrix[i][ii] == 6)
+            {
+                ofSetColor(0,46,184);
+            }
             ofRect(i * (squareSize + gapSize),ii * (squareSize + gapSize),squareSize,squareSize);
+            if(matrix[i][ii] == 5)
+            {
+                if (hasKey == true)
+                {
+                    ofSetColor(255,255,255);
+                    ofDrawBitmapString("key",i * (squareSize + gapSize) + (squareSize / 4),ii * (squareSize + gapSize) + (squareSize / 2));
+                }
+
+            }
         }
     }
  }
@@ -90,78 +103,107 @@ void board::boardDrawer ()
  }
  void board::playerController ()
  {
-    //enemy1.aiMovement();
+    matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
+//    matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
+//    matrix[enemy3.EnemyX][enemy3.EnemyY]=PreviousEnemy3;
+//    matrix[enemy4.EnemyX][enemy4.EnemyY]=PreviousEnemy4;
+//    matrix[enemy5.EnemyX][enemy5.EnemyY]=PreviousEnemy5;
+    enemy1.aiMovement(key,playerx,playery,N,matrix);
+//    enemy2.aiMovement(key,playerx,playery,N,matrix);
+//    enemy3.aiMovement(key,playerx,playery,N,matrix);
+//    enemy4.aiMovement(key,playerx,playery,N,matrix);
+//    enemy5.aiMovement(key,playerx,playery,N,matrix);
+
     matrix[playerx][playery] = Previous;
      if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
-        if (matrix[playerx + 1][playery] == 3)
+        if (matrix[playerx + 1][playery] == 3 and keyCheckIfItHasIt == 0)
         {
             hasKey = true;
+            keyCheckIfItHasIt++;
         }
         playerx++;
     }
     if ((key == 'a') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
-        if (matrix[playerx - 1][playery] == 3)
+        if (matrix[playerx - 1][playery] == 3 and keyCheckIfItHasIt == 0)
         {
             hasKey = true;
+            keyCheckIfItHasIt++;
         }
         playerx--;
     }
     if ((key == 'w') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
-        if (matrix[playerx][playery - 1] == 3)
+        if (matrix[playerx][playery - 1] == 3 and keyCheckIfItHasIt == 0)
         {
             hasKey = true;
+            keyCheckIfItHasIt++;
         }
         playery--;
     }
     if ((key == 's') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
-        if (matrix[playerx][playery + 1] == 3)
+        if (matrix[playerx][playery + 1] == 3 and keyCheckIfItHasIt == 0)
         {
             hasKey = true;
+            keyCheckIfItHasIt++;
         }
         playery++;
+    }
+    if (hasKey == true and keyCheckIfItHasIt == 1)
+    {
+        matrix[playerx][playery] = 1;
+        keyCheckIfItHasIt--;
     }
     Previous = matrix[playerx][playery];
     cout << "Player X" << playerx << endl;
     cout << "Player Y" << playery << "\n" << endl;
     matrix[playerx][playery] = 5;
+
+    PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
+//    PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
+//    PreviousEnemy3 =  matrix[enemy3.EnemyX][enemy3.EnemyY];
+//    PreviousEnemy4 = matrix[enemy4.EnemyX][enemy4.EnemyY];
+//    PreviousEnemy5 = matrix[enemy5.EnemyX][enemy5.EnemyY];
+    matrix[enemy1.EnemyX][enemy1.EnemyY] = 6;
+//    matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
+//    matrix[enemy3.EnemyX][enemy3.EnemyY] = 6;
+//    matrix[enemy4.EnemyX][enemy4.EnemyY] = 6;
+//    matrix[enemy5.EnemyX][enemy5.EnemyY] = 6;
  }
-// void Enemy::aiMovement ()
-// {
-//     cout<<"blah"<<board1.playerx-1<< endl;
-//     if((board1.key == OF_KEY_RIGHT)or(board1.key == OF_KEY_LEFT)or(board1.key == OF_KEY_UP)or(board1.key == OF_KEY_DOWN))
-//     {
-//         if (abs(board1.playerx-EnemyX)or(abs(board1.playery-EnemyY)))
-//         {
-//
-//         }
-//         else
-//         {
-//            direction=ofRandom(0,3);
-//            if ((direction == 0)and (EnemyX<board1.N-1)and(board1.matrix[EnemyX+1][EnemyY]!=0))
-//            {
-//                EnemyX++;
-//            }
-//            if ((direction == 1)and (EnemyX>0)and(board1.matrix[EnemyX-1][EnemyY]!=0))
-//            {
-//                EnemyX--;
-//            }
-//            if ((direction==2)and(EnemyY>0)and(board1.matrix[EnemyX][EnemyY-1]!=0))
-//            {
-//                EnemyY++;
-//            }
-//            if ((direction == 3)and (EnemyY<board1.N-1)and(board1.matrix[EnemyX][EnemyY+1]!=0))
-//            {
-//                EnemyY++;
-//            }
-//         }
-//         board1.matrix[EnemyX][EnemyY]=3;
-//         cout << EnemyX<< "x"<<EnemyY<<"y"<<endl;
-//     }
-// }
+void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix)
+ {
+     cout<<"\nblah\t"<<playerx-1<< endl;
+     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd'))
+     {
+         if (/*(abs(playerx-EnemyX)<2)or(abs(playery-EnemyY)<2)*/1<0)
+         {
+            cout<<"Attack?"<<endl;
+         }
+         else
+         {
+            direction=ofRandom(0,4);
+            if ((direction == 0)and (EnemyX<N-1)and(matrix[EnemyX+1][EnemyY]!=0))
+            {
+                EnemyX++;
+            }
+            if ((direction == 1)and (EnemyX>0)and(matrix[EnemyX-1][EnemyY]!=0))
+            {
+                EnemyX--;
+            }
+            if ((direction==2)and(EnemyY>0)and(matrix[EnemyX][EnemyY-1]!=0))
+            {
+                EnemyY--;
+            }
+            if ((direction == 3)and (EnemyY<N-1)and(matrix[EnemyX][EnemyY+1]!=0))
+            {
+                EnemyY++;
+            }
+         }
+         cout << "x--"<< EnemyX<<"\ty--"<<EnemyY<<endl;
+     }
+ }
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -240,6 +282,10 @@ void ofApp::mousePressed(int x, int y, int button)
 //    }
 //    board1.Previous = board1.matrix[board1.playerx][board1.playery];
 //    board1.matrix[board1.playerx][board1.playery] = 5;
+    if (board1.hasKey)
+    {
+        cout << "Tu tienes el keyo" << endl;
+    }
 }
 
 //--------------------------------------------------------------
