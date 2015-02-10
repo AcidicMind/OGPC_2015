@@ -1,3 +1,4 @@
+
 #include "ofApp.h"
 void board::boardDrawer ()
  {
@@ -21,43 +22,54 @@ void board::boardDrawer ()
             {
                 ofSetColor(105,255,51);//key
             }
-            if(matrix[i][ii] == 4)
+            if (matrix[i][ii] == 4)
+            {
+                ofSetColor(255,99,51);//exit
+            }
+            if(matrix[i][ii] == 5)
             {
                 ofSetColor(0,0,0);//player
+
             }
             ofRect(i * (squareSize + gapSize),ii * (squareSize + gapSize),squareSize,squareSize);
         }
     }
  }
  void board::tileSetup ()
- {ofSeedRandom();
+ {
+     ofSeedRandom();
+     int keyX = ofRandom(N);
+     int exitX = ofRandom(N);
+     int keyY = ofRandom(N);
+     int exitY = ofRandom(N);
     for(size_t i = 0; i < N; ++i)
     {
         Row row(N);
+        wallcount = 0;
 
         for(size_t j = 0; j < N; ++j)
         {
             wallcount--;
             if (wallcount > 0)
-            {//cout <<"wallcount"<<endl;
+            {
                 row[j] = 1;
             }
             else
-            {//cout <<"not count"<<endl;
-                row[j] = ofRandom(0,4);/* random value! */;
+            {
+                row[j] = ofRandom(0,3);// Picking a random tile!
             }
             if ((row[j] == 1) and (wallcount < 1))
             {
                 //row[j]=1;
                 wallcount = 3;
             }
-            if (row[j] == 3 and keyCount == 0)
+            if (keyX == i and keyY == j)//placing key
             {
-                keyCount++;
+                row[j] = 3;
             }
-            else if (row[j] == 3 and keyCount > 0)
+            if (exitX == i and exitY == j)//placing exit
             {
-                row[j] = ofRandom(0,3);
+                row[j] = 4;
             }
         }
 
@@ -80,24 +92,42 @@ void board::boardDrawer ()
  {
     //enemy1.aiMovement();
     matrix[playerx][playery] = Previous;
-     if ((key == OF_KEY_RIGHT) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
+     if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
+        if (matrix[playerx + 1][playery] == 3)
+        {
+            hasKey = true;
+        }
         playerx++;
     }
-    if ((key == OF_KEY_LEFT) and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
+    if ((key == 'a') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
+        if (matrix[playerx - 1][playery] == 3)
+        {
+            hasKey = true;
+        }
         playerx--;
     }
-    if ((key == OF_KEY_UP) and (playery > 0) and (matrix[playerx][playery - 1] !=0))
+    if ((key == 'w') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
+        if (matrix[playerx][playery - 1] == 3)
+        {
+            hasKey = true;
+        }
         playery--;
     }
-    if ((key == OF_KEY_DOWN) and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
+    if ((key == 's') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
+        if (matrix[playerx][playery + 1] == 3)
+        {
+            hasKey = true;
+        }
         playery++;
     }
     Previous = matrix[playerx][playery];
-    matrix[playerx][playery] = 4;
+    cout << "Player X" << playerx << endl;
+    cout << "Player Y" << playery << "\n" << endl;
+    matrix[playerx][playery] = 5;
  }
 // void Enemy::aiMovement ()
 // {
@@ -156,14 +186,14 @@ void ofApp::draw()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-    board1.key=key;
-    //enemy1.aiMovement();
-    board1.playerController();
+
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    board1.key=key;
+    //enemy1.aiMovement();
+    board1.playerController();
 }
 
 //--------------------------------------------------------------
@@ -179,8 +209,37 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-    cout << "mousePressed: " << x / (board1.squareSize + board1.gapSize) << ", " << y / (board1.squareSize + board1.gapSize) << " button: " << button << endl;
-
+//    board1.matrix[board1.playerx][board1.playery] = board1.Previous;
+//    cout << "mousePressed: " << x / (board1.squareSize + board1.gapSize) << ", " << y / (board1.squareSize + board1.gapSize) << " button: " << button << endl;
+//    int xCoord = x / (board1.squareSize + board1.gapSize);
+//    int yCoord = y / (board1.squareSize + board1.gapSize);
+//    if (board1.playerx == xCoord)
+//    {
+//        if (board1.playery + 1 == yCoord and board1.matrix[board1.playerx][board1.playery + 1] != 0)
+//        {
+//            //if (board1.matrix[board1.playery + 1][board1.playery] != 0)
+//            //{
+//            board1.playery = yCoord;
+//            //}
+//        }
+//        if (board1.playery - 1 == yCoord and board1.matrix[board1.playerx][board1.playery - 1] != 0)
+//        {
+//            board1.playery = yCoord;
+//        }
+//    }
+//    if (board1.playery == yCoord)
+//    {
+//        if (board1.playerx + 1 == xCoord and board1.matrix[board1.playerx + 1][board1.playery] != 0)
+//        {
+//            board1.playerx = xCoord;
+//        }
+//        if (board1.playerx - 1 == xCoord and board1.matrix[board1.playerx - 1][board1.playery] != 0)
+//        {
+//            board1.playerx = xCoord;
+//        }
+//    }
+//    board1.Previous = board1.matrix[board1.playerx][board1.playery];
+//    board1.matrix[board1.playerx][board1.playery] = 5;
 }
 
 //--------------------------------------------------------------
