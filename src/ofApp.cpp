@@ -116,7 +116,7 @@ void board::boardDrawer ()
 //    enemy5.aiMovement(key,playerx,playery,N,matrix);
 
     matrix[playerx][playery] = Previous;
-     if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
+     if (((key == 'D')or(key == 'd')) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
         if (matrix[playerx + 1][playery] == 3 and keyCheckIfItHasIt == 0)
         {
@@ -125,7 +125,7 @@ void board::boardDrawer ()
         }
         playerx++;
     }
-    if ((key == 'a') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
+    if (((key == 'A')or(key == 'a')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
         if (matrix[playerx - 1][playery] == 3 and keyCheckIfItHasIt == 0)
         {
@@ -134,7 +134,7 @@ void board::boardDrawer ()
         }
         playerx--;
     }
-    if ((key == 'w') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
+    if (((key == 'W')or(key == 'w')) and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
         if (matrix[playerx][playery - 1] == 3 and keyCheckIfItHasIt == 0)
         {
@@ -143,7 +143,7 @@ void board::boardDrawer ()
         }
         playery--;
     }
-    if ((key == 's') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
+    if (((key == 'S')or(key == 's')) and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
         if (matrix[playerx][playery + 1] == 3 and keyCheckIfItHasIt == 0)
         {
@@ -180,7 +180,7 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
          EnemyX = ofRandom(N);
          EnemyY = ofRandom(N);
      }
-     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd'))
+     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd') or (key == 'W') or (key =='A') or (key == 'S') or ( key == 'D'))
      {
          if ((abs(playerx-EnemyX) < 4) and (abs(playery-EnemyY) < 4))
          {
