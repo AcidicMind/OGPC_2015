@@ -7,7 +7,7 @@ typedef vector<int> Row;
 class Enemy
 {
     public:
-    void aiMovement(int key,int playerx,int playery,const size_t N,Matrix matrix);// typedef not declared yet
+    void aiMovement(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves);// typedef not declared yet
     void test(int key);
     int direction=0;
     int EnemyX = 9;
@@ -20,17 +20,18 @@ class board
     public:
     void boardDrawer();
     void tileSetup();
-    void playerController(int key);
+    void playerController();
     int playerx = 0;
     int playery = 0;
     int Previous = 0;
     int PreviousEnemy = 1;
-//    int PreviousEnemy2 = 1;
+    int PreviousEnemy2 = 1;
 //    int PreviousEnemy3 = 1;
 //    int PreviousEnemy4 = 1;
 //    int PreviousEnemy5 = 1;
+    int moves = 0;
     int wallcount = 0;
-    //int key = 0; //key pressed
+    int key = 0; //key pressed
     int keyCount = 0;//number of keys checker -- supposed to be only one
     int exitCount = 0;//number of exits checker -- supposed to be only one
     bool hasKey = false;//do we have the key yet???
@@ -42,7 +43,7 @@ class board
     Matrix matrix;
     Matrix level;
     Enemy enemy1;
-//    Enemy enemy2;
+    Enemy enemy2;
 //    Enemy enemy3;
 //    Enemy enemy4;
 //    Enemy enemy5;
