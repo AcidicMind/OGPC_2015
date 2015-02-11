@@ -20,7 +20,7 @@ class board
     public:
     void boardDrawer();
     void tileSetup();
-    void playerController();
+    void playerController(int key);
     int playerx = 0;
     int playery = 0;
     int Previous = 0;
@@ -30,7 +30,7 @@ class board
 //    int PreviousEnemy4 = 1;
 //    int PreviousEnemy5 = 1;
     int wallcount = 0;
-    int key = 0; //key pressed
+    //int key = 0; //key pressed
     int keyCount = 0;//number of keys checker -- supposed to be only one
     int exitCount = 0;//number of exits checker -- supposed to be only one
     bool hasKey = false;//do we have the key yet???
