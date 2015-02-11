@@ -101,7 +101,7 @@ void board::boardDrawer ()
         cout << endl;
     }
  }
- void board::playerController ()
+ void board::playerController (int key)
  {
     matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
 //    matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
@@ -214,7 +214,7 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    //board1.matrix[board1.Previousplayerx][board1.Previousplayery]=board1.Previous;
+    
 
 }
 
@@ -233,9 +233,8 @@ void ofApp::keyPressed(int key)
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    board1.key=key;
-    //enemy1.aiMovement();
-    board1.playerController();
+    
+    board1.playerController(key);
 }
 
 //--------------------------------------------------------------
