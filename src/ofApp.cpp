@@ -1,5 +1,6 @@
 
 #include "ofApp.h"
+#include <math.h>
 void board::boardDrawer ()
  {
     for (int i = 0; i < N; i++)
@@ -101,15 +102,15 @@ void board::boardDrawer ()
         cout << endl;
     }
  }
- void board::playerController (int key)
+ void board::playerController ()
  {
     matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
-//    matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
+    matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
 //    matrix[enemy3.EnemyX][enemy3.EnemyY]=PreviousEnemy3;
 //    matrix[enemy4.EnemyX][enemy4.EnemyY]=PreviousEnemy4;
 //    matrix[enemy5.EnemyX][enemy5.EnemyY]=PreviousEnemy5;
-    enemy1.aiMovement(key,playerx,playery,N,matrix);
-//    enemy2.aiMovement(key,playerx,playery,N,matrix);
+    enemy1.aiMovement(key,playerx,playery,N,matrix,moves);
+    enemy2.aiMovement(key,playerx,playery,N,matrix,moves);
 //    enemy3.aiMovement(key,playerx,playery,N,matrix);
 //    enemy4.aiMovement(key,playerx,playery,N,matrix);
 //    enemy5.aiMovement(key,playerx,playery,N,matrix);
@@ -162,41 +163,60 @@ void board::boardDrawer ()
     matrix[playerx][playery] = 5;
 
     PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
-//    PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
+    PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
 //    PreviousEnemy3 =  matrix[enemy3.EnemyX][enemy3.EnemyY];
 //    PreviousEnemy4 = matrix[enemy4.EnemyX][enemy4.EnemyY];
 //    PreviousEnemy5 = matrix[enemy5.EnemyX][enemy5.EnemyY];
     matrix[enemy1.EnemyX][enemy1.EnemyY] = 6;
-//    matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
+    matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
 //    matrix[enemy3.EnemyX][enemy3.EnemyY] = 6;
 //    matrix[enemy4.EnemyX][enemy4.EnemyY] = 6;
 //    matrix[enemy5.EnemyX][enemy5.EnemyY] = 6;
  }
-void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix)
+void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix,int moves)
  {
-     cout<<"\nblah\t"<<playerx-1<< endl;
+     if (moves == 0)
+     {
+         EnemyX = ofRandom(N);
+         EnemyY = ofRandom(N);
+     }
      if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd'))
      {
-         if (/*(abs(playerx-EnemyX)<2)or(abs(playery-EnemyY)<2)*/1<0)
+         if ((abs(playerx-EnemyX) < 4) and (abs(playery-EnemyY) < 4))
          {
-            cout<<"Attack?"<<endl;
-         }
-         else
-         {
-            direction=ofRandom(0,4);
-            if ((direction == 0)and (EnemyX<N-1)and(matrix[EnemyX+1][EnemyY]!=0))
+            if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
             {
                 EnemyX++;
             }
-            if ((direction == 1)and (EnemyX>0)and(matrix[EnemyX-1][EnemyY]!=0))
+            if (playerx < EnemyX and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0))
             {
                 EnemyX--;
             }
-            if ((direction==2)and(EnemyY>0)and(matrix[EnemyX][EnemyY-1]!=0))
+            if (playery < EnemyY and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0))
             {
                 EnemyY--;
             }
-            if ((direction == 3)and (EnemyY<N-1)and(matrix[EnemyX][EnemyY+1]!=0))
+            if (playery > EnemyY and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0))
+            {
+                EnemyY++;
+            }
+         }
+         else
+         {
+            direction = ofRandom(4);
+            if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
+            {
+                EnemyX++;
+            }
+            if ((direction == 1) and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0))
+            {
+                EnemyX--;
+            }
+            if ((direction==2) and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0))
+            {
+                EnemyY--;
+            }
+            if ((direction == 3) and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0))
             {
                 EnemyY++;
             }
@@ -214,7 +234,7 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    
+    //board1.matrix[board1.Previousplayerx][board1.Previousplayery]=board1.Previous;
 
 }
 
@@ -233,8 +253,10 @@ void ofApp::keyPressed(int key)
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    
-    board1.playerController(key);
+    board1.key=key;
+    //enemy1.aiMovement();
+    board1.playerController();
+    board1.moves++;
 }
 
 //--------------------------------------------------------------
