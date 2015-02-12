@@ -36,16 +36,25 @@ void board::boardDrawer ()
             {
                 ofSetColor(0,46,184);
             }
-            ofRect(i * (squareSize + gapSize),ii * (squareSize + gapSize),squareSize,squareSize);
+            int boardExtenderx=0;
+            int boardExtedery=0;
+            if (playerx>6)
+            {
+                boardExtenderx=(playerx-6)*-1;
+            }
+            if (playery>6)
+            {
+                boardExtedery=(playery-6)*-1;
+            }
+            ofRect((i+boardExtenderx) * (squareSize + gapSize),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
             if(matrix[i][ii] == 5)
             {
                 if (hasKey == true)
                 {
                     ofSetColor(255,255,255);
-                    ofDrawBitmapString("key",i * (squareSize + gapSize) + (squareSize / 4),ii * (squareSize + gapSize) + (squareSize / 2));
+                    ofDrawBitmapString("key",(i+boardExtenderx) * (squareSize + gapSize) + (squareSize / 4),(ii+boardExtedery) * (squareSize + gapSize) + (squareSize / 2));
                 }
 
-            }
         }
     }
  }
