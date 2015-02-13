@@ -1,22 +1,84 @@
-
 #include "ofApp.h"
-void board::boardDrawer ()
+#include <math.h>
+
+void statbar::mainbar (int health, int mana, int steps,bool hasKey)
+{
+    int heartSpacing = 100;
+    int manaSpacing = 100;
+    ofSetColor(0,0,0);
+    ofSetCircleResolution(100);
+    ofRect(ofGetScreenWidth()-120,0,120,ofGetScreenHeight());
+    ofSetColor(255,0,0);
+    for(int h = 0; h != health; h++)//draws health icons
+    {
+        ofSetColor(255,0,0);
+        ofCircle(ofGetScreenWidth()-80,heartSpacing,10);
+        heartSpacing = heartSpacing + 30;
+    }
+    for(int h = 0; h != mana; h++)//draws mana icons
+    {
+        ofSetColor(0,255,0);
+        ofCircle(ofGetScreenWidth()-40,manaSpacing,10);
+        manaSpacing = manaSpacing + 30;
+    }
+    if (hasKey == true)
+    {
+        ofSetColor(245,184,0);
+        ofCircle(ofGetScreenWidth()-60,300,30);
+    }
+
+    //nothing harmful
+}
+void board::boardDrawer (int key,int moves,bool pressedCheck)
  {
+    if (pressedCheck == previousKeyCheck)
+    {
+        matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
+        matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
+        enemy1.aiMovement(key,player1.playerx,player1.playery,N,matrix,moves);
+        enemy2.aiMovement(key,player1.playerx,player1.playery,N,matrix,moves);
+        matrix[player1.playerx][player1.playery] = Previous;
+
+        player1.playerController(key,matrix,N);
+
+        if (player1.hasKey == true and player1.variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
+        {
+            matrix[player1.playerx][player1.playery] = 1;
+            player1.variableForGettingRidOfKeySpaceWhenYouCollectIt--;
+        }
+
+        Previous = matrix[player1.playerx][player1.playery];
+        matrix[player1.playerx][player1.playery] = 5;
+        PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
+        PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
+        matrix[enemy1.EnemyX][enemy1.EnemyY] = 6;
+        matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
+        if (previousKeyCheck == true)
+        {
+            previousKeyCheck = false;
+        }
+        else if (previousKeyCheck == false)
+        {
+            previousKeyCheck = true;
+        }
+    }
+
+
     for (int i = 0; i < N; i++)
     {
         for (int ii = 0; ii < N; ii++)
         {
             if (matrix[i][ii] == 0)
             {
-                ofSetColor(200,50,255);//wall
+                ofSetColor(184,138,0);//wall
             }
             if (matrix[i][ii] == 1)
             {
-                ofSetColor(255,150,0);//floor
+                ofSetColor(255,204,51);//floor
             }
             if (matrix[i][ii] == 2)
             {
-                ofSetColor(0,255 , 255);//destructable object
+                ofSetColor(184,46,0);//destructable object
             }
             if (matrix[i][ii] == 3)
             {
@@ -26,14 +88,46 @@ void board::boardDrawer ()
             {
                 ofSetColor(255,99,51);//exit
             }
-            if(matrix[i][ii] == 5)
+            if (matrix[i][ii] == 5)
             {
                 ofSetColor(0,0,0);//player
 
             }
-            ofRect(i * (squareSize + gapSize),ii * (squareSize + gapSize),squareSize,squareSize);
+            if (matrix[i][ii] == 6)
+            {
+                ofSetColor(0,46,184);
+            }
+            //-----------------------------------------------------------------------
+            while ((ofGetScreenWidth()-120)%(squareSize+gapSize) != 0 or ofGetScreenHeight()%(squareSize+gapSize) != 0)
+            {
+                squareSize++;
+            }
+            boardExtenderx;
+            boardExtedery;
+            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2-1 and (ofGetScreenWidth()-120) < N*(squareSize+gapSize) and player1.playerx + (((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2)+1 < N)
+            {
+                boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2))*-1;
+            }
+            if (player1.playery > (ofGetScreenHeight()/(squareSize+gapSize))/2-1 and ofGetScreenHeight() < N*(squareSize+gapSize) and player1.playery + ((ofGetScreenHeight()/(squareSize+gapSize))/2)-1 < N)
+            {
+                boardExtedery=(player1.playery-((ofGetScreenHeight()/(squareSize+gapSize))/2))*-1;
+            }
+            //-----------------------------------------------------------------------
+            ofRect((i+boardExtenderx) * (squareSize + gapSize),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+            //-----------------------------------------------------------------------
+            if(matrix[i][ii] == 5)
+            {
+                if (player1.hasKey == true)
+                {
+                    ofSetColor(255,255,255);
+                    ofDrawBitmapString("key",(i+boardExtenderx) * (squareSize + gapSize) + (squareSize / 4),(ii+boardExtedery) * (squareSize + gapSize) + (squareSize / 2));
+                }
+
+            }
+            //-----------------------------------------------------------------------
         }
     }
+    statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);//------------------------------------------------------------------------------------------=====:O
  }
  void board::tileSetup ()
  {
@@ -88,99 +182,142 @@ void board::boardDrawer ()
         cout << endl;
     }
  }
- void board::playerController ()
+ void player::playerController (int key,Matrix matrix,const size_t N)
  {
-    //enemy1.aiMovement();
-    matrix[playerx][playery] = Previous;
+//    matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
+//    matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
+//
+//    enemy1.aiMovement(key,playerx,playery,N,matrix,moves);
+//    enemy2.aiMovement(key,playerx,playery,N,matrix,moves);
+//
+//    matrix[playerx][playery] = Previous;
      if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
-        if (matrix[playerx + 1][playery] == 3)
+        if (matrix[playerx + 1][playery] == 3 and hasKey == false)
         {
             hasKey = true;
+            variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
         playerx++;
     }
     if ((key == 'a') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
-        if (matrix[playerx - 1][playery] == 3)
+        if (matrix[playerx - 1][playery] == 3 and hasKey == false)
         {
             hasKey = true;
+            variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
         playerx--;
     }
     if ((key == 'w') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
-        if (matrix[playerx][playery - 1] == 3)
+        if (matrix[playerx][playery - 1] == 3 and hasKey == false)
         {
             hasKey = true;
+            variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
         playery--;
     }
     if ((key == 's') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
-        if (matrix[playerx][playery + 1] == 3)
+        if (matrix[playerx][playery + 1] == 3 and hasKey == false)
         {
             hasKey = true;
+            variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
         playery++;
     }
-    Previous = matrix[playerx][playery];
-    cout << "Player X" << playerx << endl;
-    cout << "Player Y" << playery << "\n" << endl;
-    matrix[playerx][playery] = 5;
+//    if (hasKey == true or variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
+//    {
+//        matrix[playerx][playery] = 1;
+//        variableForGettingRidOfKeySpaceWhenYouCollectIt--;
+//    }
+
+
+//    Previous = matrix[playerx][playery];
+//    matrix[playerx][playery] = 5;
+//    PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
+//    PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
+//    matrix[enemy1.EnemyX][enemy1.EnemyY] = 6;
+//    matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
+
  }
-// void Enemy::aiMovement ()
-// {
-//     cout<<"blah"<<board1.playerx-1<< endl;
-//     if((board1.key == OF_KEY_RIGHT)or(board1.key == OF_KEY_LEFT)or(board1.key == OF_KEY_UP)or(board1.key == OF_KEY_DOWN))
-//     {
-//         if (abs(board1.playerx-EnemyX)or(abs(board1.playery-EnemyY)))
-//         {
-//
-//         }
-//         else
-//         {
-//            direction=ofRandom(0,3);
-//            if ((direction == 0)and (EnemyX<board1.N-1)and(board1.matrix[EnemyX+1][EnemyY]!=0))
-//            {
-//                EnemyX++;
-//            }
-//            if ((direction == 1)and (EnemyX>0)and(board1.matrix[EnemyX-1][EnemyY]!=0))
-//            {
-//                EnemyX--;
-//            }
-//            if ((direction==2)and(EnemyY>0)and(board1.matrix[EnemyX][EnemyY-1]!=0))
-//            {
-//                EnemyY++;
-//            }
-//            if ((direction == 3)and (EnemyY<board1.N-1)and(board1.matrix[EnemyX][EnemyY+1]!=0))
-//            {
-//                EnemyY++;
-//            }
-//         }
-//         board1.matrix[EnemyX][EnemyY]=3;
-//         cout << EnemyX<< "x"<<EnemyY<<"y"<<endl;
-//     }
-// }
+void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix,int moves)
+ {
+     if (x == 0)
+     {
+         EnemyX = ofRandom(N);
+         EnemyY = ofRandom(N);
+     }
+     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd'))
+     {
+         if ((abs(playerx-EnemyX) < 4) and (abs(playery-EnemyY) < 4))
+         {
+            if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
+            {
+                EnemyX++;
+            }
+            if (playerx < EnemyX and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0))
+            {
+                EnemyX--;
+            }
+            if (playery < EnemyY and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0))
+            {
+                EnemyY--;
+            }
+            if (playery > EnemyY and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0))
+            {
+                EnemyY++;
+            }
+         }
+         else
+         {
+            direction = ofRandom(4);
+            if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
+            {
+                EnemyX++;
+            }
+            if ((direction == 1) and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0))
+            {
+                EnemyX--;
+            }
+            if ((direction==2) and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0))
+            {
+                EnemyY--;
+            }
+            if ((direction == 3) and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0))
+            {
+                EnemyY++;
+            }
+         }
+     }
+     x++;
+ }
+
+ void level::gameplay()
+{
+    if (moves == 0)
+    {
+        board1.tileSetup();
+    }
+    board1.boardDrawer(key,moves,pressedCheck);
+}
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-    board1.tileSetup();
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    //board1.matrix[board1.Previousplayerx][board1.Previousplayery]=board1.Previous;
 
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    board1.boardDrawer();
-
+    level1.gameplay();
 }
 
 //--------------------------------------------------------------
@@ -191,12 +328,20 @@ void ofApp::keyPressed(int key)
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    board1.key=key;
-    //enemy1.aiMovement();
-    board1.playerController();
+    level1.key = key;
+    level1.moves++;
+    if (level1.pressedCheck == true)
+    {
+        level1.pressedCheck = false;
+    }
+    else if (level1.pressedCheck == false)
+    {
+        level1.pressedCheck = true;
+    }
+    //board1.moves++;
 }
 
-//--------------------------------------------------------------
+//---------------------------------------const size_t N-----------------------
 void ofApp::mouseMoved(int x, int y ){
 
 }
@@ -209,37 +354,10 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-//    board1.matrix[board1.playerx][board1.playery] = board1.Previous;
-//    cout << "mousePressed: " << x / (board1.squareSize + board1.gapSize) << ", " << y / (board1.squareSize + board1.gapSize) << " button: " << button << endl;
 //    int xCoord = x / (board1.squareSize + board1.gapSize);
 //    int yCoord = y / (board1.squareSize + board1.gapSize);
-//    if (board1.playerx == xCoord)
-//    {
-//        if (board1.playery + 1 == yCoord and board1.matrix[board1.playerx][board1.playery + 1] != 0)
-//        {
-//            //if (board1.matrix[board1.playery + 1][board1.playery] != 0)
-//            //{
-//            board1.playery = yCoord;
-//            //}
-//        }
-//        if (board1.playery - 1 == yCoord and board1.matrix[board1.playerx][board1.playery - 1] != 0)
-//        {
-//            board1.playery = yCoord;
-//        }
-//    }
-//    if (board1.playery == yCoord)
-//    {
-//        if (board1.playerx + 1 == xCoord and board1.matrix[board1.playerx + 1][board1.playery] != 0)
-//        {
-//            board1.playerx = xCoord;
-//        }
-//        if (board1.playerx - 1 == xCoord and board1.matrix[board1.playerx - 1][board1.playery] != 0)
-//        {
-//            board1.playerx = xCoord;
-//        }
-//    }
-//    board1.Previous = board1.matrix[board1.playerx][board1.playery];
-//    board1.matrix[board1.playerx][board1.playery] = 5;
+//    cout << "mousePressed: " << xCoord << ", " << yCoord << " button: " << button << endl;
+
 }
 
 //--------------------------------------------------------------
