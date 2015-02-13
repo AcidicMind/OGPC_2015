@@ -1,69 +1,76 @@
 #pragma once
 #include "ofMain.h"
 
+
 typedef vector< vector<int> > Matrix;
 typedef vector<int> Row;
-
 class Enemy
 {
-    public:
+public:
     void aiMovement(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves);// typedef not declared yet
-    void test(int key);
+    //void test(int key);
     int direction=0;
     int EnemyX = 9;
     int EnemyY = 9;
     int health=10;
 };
-
-class board
+class player
 {
-    public:
-    void boardDrawer();
-    void tileSetup();
-    void playerController(int key);
+public:
+    void playerController(int key,Matrix matrix,const size_t N);
     int playerx = 0;
     int playery = 0;
+    int variableForGettingRidOfKeySpaceWhenYouCollectIt = 0;
+    bool hasKey = false;//do we have the key yet???
+};
+class board
+{
+public:
+    void boardDrawer(/*int playerx,int playery,bool hasKey,*/int key,int moves,bool pressedCheck);
+    void boardUpdater();
+    void tileSetup();
+    int wallcount = 0;
+    int keyCount = 0;//number of keys checker -- supposed to be only one
+    int exitCount = 0;//number of exits checker -- supposed to be only one
+    const size_t N = 50; // the dimension of the matrix
+    int gapSize = 5;
+    int squareSize = 55;
+    int boardExtenderx=0;
+    int boardExtedery=0;
     int Previous = 0;
     int PreviousEnemy = 1;
     int PreviousEnemy2 = 1;
-//    int PreviousEnemy3 = 1;
-//    int PreviousEnemy4 = 1;
-//    int PreviousEnemy5 = 1;
-    int moves = 0;
-    int wallcount = 0;
-    //int key = 0; //key pressed
-    int keyCount = 0;//number of keys checker -- supposed to be only one
-    int exitCount = 0;//number of exits checker -- supposed to be only one
-    bool hasKey = false;//do we have the key yet???
-    int keyCheckIfItHasIt = 0;
-    const size_t N = 12; // the dimension of the matrix
-    int gapSize = 5;
-    int squareSize = 60;
+    bool previousKeyCheck = false;
     vector<int>wall;
     Matrix matrix;
     Matrix level;
+    player player1;
     Enemy enemy1;
     Enemy enemy2;
-//    Enemy enemy3;
-//    Enemy enemy4;
-//    Enemy enemy5;
 };
-
+class level
+{
+public:
+    void gameplay();
+    int moves = 0;
+    int key;
+    bool pressedCheck = true;
+    board board1;
+};
 class ofApp : public ofBaseApp{
 
-	public:
-		void setup();
-		void update();
-		void draw();
-
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-        board board1;
+public:
+    void setup();
+    void update();
+    void draw();
+    void keyPressed(int key);
+    void keyReleased(int key);
+    void mouseMoved(int x, int y );
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    void windowResized(int w, int h);
+    void dragEvent(ofDragInfo dragInfo);
+    void gotMessage(ofMessage msg);
+    level level1;
 };
