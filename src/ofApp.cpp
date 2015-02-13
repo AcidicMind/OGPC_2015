@@ -2,7 +2,35 @@
 #include "ofApp.h"
 #include <math.h>
 
-void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int moves,bool pressedCheck)
+void statbar::mainbar (int health, int mana, int steps,bool hasKey)
+{
+    int heartSpacing = 100;
+    int manaSpacing = 100;
+    ofSetColor(0,0,0);
+    ofSetCircleResolution(100);
+    ofRect(ofGetScreenWidth()-120,0,120,ofGetScreenHeight());
+    ofSetColor(255,0,0);
+    for(int h = 0; h != health; h++)//draws health icons
+    {
+        ofSetColor(255,0,0);
+        ofCircle(ofGetScreenWidth()-80,heartSpacing,10);
+        heartSpacing = heartSpacing + 30;
+    }
+    for(int h = 0; h != mana; h++)//draws mana icons
+    {
+        ofSetColor(0,255,0);
+        ofCircle(ofGetScreenWidth()-40,manaSpacing,10);
+        manaSpacing = manaSpacing + 30;
+    }
+    if (hasKey == true)
+    {
+        ofSetColor(245,184,0);
+        ofCircle(ofGetScreenWidth()-60,300,30);
+    }
+
+    //nothing harmful
+}
+void board::boardDrawer (int key,int moves,bool pressedCheck)
  {
     if (pressedCheck == previousKeyCheck)
     {
@@ -13,6 +41,12 @@ void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int mov
         matrix[player1.playerx][player1.playery] = Previous;
 
         player1.playerController(key,matrix,N);
+
+        if (player1.hasKey == true and player1.variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
+        {
+            matrix[player1.playerx][player1.playery] = 1;
+            player1.variableForGettingRidOfKeySpaceWhenYouCollectIt--;
+        }
 
         Previous = matrix[player1.playerx][player1.playery];
         matrix[player1.playerx][player1.playery] = 5;
@@ -31,22 +65,21 @@ void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int mov
     }
 
 
-
     for (int i = 0; i < N; i++)
     {
         for (int ii = 0; ii < N; ii++)
         {
             if (matrix[i][ii] == 0)
             {
-                ofSetColor(200,50,255);//wall
+                ofSetColor(184,138,0);//wall
             }
             if (matrix[i][ii] == 1)
             {
-                ofSetColor(255,150,0);//floor
+                ofSetColor(255,204,51);//floor
             }
             if (matrix[i][ii] == 2)
             {
-                ofSetColor(0,255 , 255);//destructable object
+                ofSetColor(184,46,0);//destructable object
             }
             if (matrix[i][ii] == 3)
             {
@@ -65,18 +98,18 @@ void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int mov
             {
                 ofSetColor(0,46,184);
             }
-            //----------------------------------------------------------------------
-            while (ofGetScreenWidth()%(squareSize+gapSize) != 0 or ofGetScreenHeight()%(squareSize+gapSize) != 0)
+            //-----------------------------------------------------------------------
+            while ((ofGetScreenWidth()-120)%(squareSize+gapSize) != 0 or ofGetScreenHeight()%(squareSize+gapSize) != 0)
             {
                 squareSize++;
             }
             boardExtenderx;
             boardExtedery;
-            if (player1.playerx > (ofGetScreenWidth()/(squareSize+gapSize))/2 and ofGetScreenWidth() < N*(squareSize+gapSize) and player1.playerx + ((ofGetScreenWidth()/(squareSize+gapSize))/2) < N)
+            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2-1 and (ofGetScreenWidth()-120) < N*(squareSize+gapSize) and player1.playerx + (((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2)+1 < N)
             {
-                boardExtenderx=(player1.playerx-((ofGetScreenWidth()/(squareSize+gapSize))/2))*-1;
+                boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2))*-1;
             }
-            if (player1.playery > (ofGetScreenHeight()/(squareSize+gapSize))/2 and ofGetScreenHeight() < N*(squareSize+gapSize) and player1.playery + ((ofGetScreenHeight()/(squareSize+gapSize))/2) < N)
+            if (player1.playery > (ofGetScreenHeight()/(squareSize+gapSize))/2-1 and ofGetScreenHeight() < N*(squareSize+gapSize) and player1.playery + ((ofGetScreenHeight()/(squareSize+gapSize))/2)-1 < N)
             {
                 boardExtedery=(player1.playery-((ofGetScreenHeight()/(squareSize+gapSize))/2))*-1;
             }
@@ -95,6 +128,7 @@ void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int mov
             //-----------------------------------------------------------------------
         }
     }
+    statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);//------------------------------------------------------------------------------------------=====:O
  }
  void board::tileSetup ()
  {
@@ -194,11 +228,13 @@ void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int mov
         }
         playery++;
     }
-    if (hasKey == true and variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
-    {
-        matrix[playerx][playery] = 1;
-        variableForGettingRidOfKeySpaceWhenYouCollectIt--;
-    }
+//    if (hasKey == true or variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
+//    {
+//        matrix[playerx][playery] = 1;
+//        variableForGettingRidOfKeySpaceWhenYouCollectIt--;
+//    }
+
+
 //    Previous = matrix[playerx][playery];
 //    matrix[playerx][playery] = 5;
 //    PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
@@ -209,7 +245,7 @@ void board::boardDrawer (/*int playerx,int playery,bool hasKey,*/int key,int mov
  }
 void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix,int moves)
  {
-     if (moves == 0)
+     if (x == 0)
      {
          EnemyX = ofRandom(N);
          EnemyY = ofRandom(N);
@@ -255,8 +291,8 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
                 EnemyY++;
             }
          }
-         cout << "x--"<< EnemyX<<"\ty--"<<EnemyY<<endl;
      }
+     x++;
  }
 
  void level::gameplay()
@@ -265,7 +301,7 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
     {
         board1.tileSetup();
     }
-    board1.boardDrawer(/*player1.playerx,player1.playery,player1.hasKey*/key,moves,pressedCheck);
+    board1.boardDrawer(key,moves,pressedCheck);
 }
 //--------------------------------------------------------------
 void ofApp::setup()
