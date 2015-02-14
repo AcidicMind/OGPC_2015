@@ -1,9 +1,9 @@
 #pragma once
 #include "ofMain.h"
 
-
 typedef vector< vector<int> > Matrix;
 typedef vector<int> Row;
+
 class Enemy
 {
 public:
@@ -13,7 +13,15 @@ public:
     int EnemyX = 9;
     int EnemyY = 9;
     int health=10;
+    int x = 0;
 };
+
+class statbar // Display of various information in a corner hovering above the main screen
+{
+public:
+    void mainbar(int health,int mana, int steps,bool hasKey); // function for drawing and updating the statbar's info
+};
+
 class player
 {
 public:
@@ -22,7 +30,11 @@ public:
     int playery = 0;
     int variableForGettingRidOfKeySpaceWhenYouCollectIt = 0;
     bool hasKey = false;//do we have the key yet???
+    int health = 3;
+    int steps = 0;
+    int mana = 3; //magic power
 };
+
 class board
 {
 public:
@@ -47,7 +59,9 @@ public:
     player player1;
     Enemy enemy1;
     Enemy enemy2;
+    statbar statbar1;
 };
+
 class level
 {
 public:
@@ -57,6 +71,7 @@ public:
     bool pressedCheck = true;
     board board1;
 };
+
 class ofApp : public ofBaseApp{
 
 public:
