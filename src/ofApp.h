@@ -8,14 +8,12 @@ class Enemy
 {
 public:
     void aiMovement(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves);// typedef not declared yet
-    //void test(int key);
     int direction=0;
-    int EnemyX = 9;
-    int EnemyY = 9;
+    int EnemyX=10;
+    int EnemyY=10;
     int health=10;
-    int x = 0;
+    //int x = 0;
 };
-
 class statbar // Display of various information in a corner hovering above the main screen
 {
 public:
@@ -26,6 +24,7 @@ class player
 {
 public:
     void playerController(int key,Matrix matrix,const size_t N);
+    void playerDrawer();
     int playerx = 0;
     int playery = 0;
     int variableForGettingRidOfKeySpaceWhenYouCollectIt = 0;
@@ -33,43 +32,54 @@ public:
     int health = 3;
     int steps = 0;
     int mana = 3; //magic power
+
 };
 
 class board
 {
 public:
     void boardDrawer(/*int playerx,int playery,bool hasKey,*/int key,int moves,bool pressedCheck);
-    void boardUpdater();
     void tileSetup();
     int wallcount = 0;
     int keyCount = 0;//number of keys checker -- supposed to be only one
     int exitCount = 0;//number of exits checker -- supposed to be only one
     const size_t N = 50; // the dimension of the matrix
-    int gapSize = 5;
+    int gapSize = 0;
     int squareSize = 55;
     int boardExtenderx=0;
     int boardExtedery=0;
-    int Previous = 0;
-    int PreviousEnemy = 1;
-    int PreviousEnemy2 = 1;
+
     bool previousKeyCheck = false;
+
     vector<int>wall;
     Matrix matrix;
     Matrix level;
+
     player player1;
-    Enemy enemy1;
-    Enemy enemy2;
     statbar statbar1;
 };
+class Enemies
+{
+    public:
+    void setup(const size_t N);
+    void updater(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves);
+    void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
+    vector<Enemy> enemylist;
 
+};
 class level
 {
 public:
     void gameplay();
+    void Setup();
+    void keyPressed(int key);
     int moves = 0;
     int key;
+    bool setup=true;
     bool pressedCheck = true;
     board board1;
+    Enemies enemies1;
+
 };
 
 class ofApp : public ofBaseApp{
