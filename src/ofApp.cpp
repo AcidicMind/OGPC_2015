@@ -34,11 +34,6 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
  {
     if (pressedCheck == previousKeyCheck)
     {
-        matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
-        matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
-        enemy1.aiMovement(key,player1.playerx,player1.playery,N,matrix,moves);
-        enemy2.aiMovement(key,player1.playerx,player1.playery,N,matrix,moves);
-        matrix[player1.playerx][player1.playery] = Previous;
 
         player1.playerController(key,matrix,N);
 
@@ -48,12 +43,6 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             player1.variableForGettingRidOfKeySpaceWhenYouCollectIt--;
         }
 
-        Previous = matrix[player1.playerx][player1.playery];
-        matrix[player1.playerx][player1.playery] = 5;
-        PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
-        PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
-        matrix[enemy1.EnemyX][enemy1.EnemyY] = 6;
-        matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
         if (previousKeyCheck == true)
         {
             previousKeyCheck = false;
@@ -63,8 +52,6 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             previousKeyCheck = true;
         }
     }
-
-
     for (int i = 0; i < N; i++)
     {
         for (int ii = 0; ii < N; ii++)
@@ -89,15 +76,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             {
                 ofSetColor(255,99,51);//exit
             }
-            if (matrix[i][ii] == 5)
-            {
-                ofSetColor(0,0,0);//player
 
-            }
-            if (matrix[i][ii] == 6)
-            {
-                ofSetColor(0,46,184);
-            }
             //-----------------------------------------------------------------------
             while ((ofGetScreenWidth()-120)%(squareSize+gapSize) != 0 or ofGetScreenHeight()%(squareSize+gapSize) != 0)
             {
@@ -116,19 +95,23 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             //-----------------------------------------------------------------------
             ofRect((i+boardExtenderx) * (squareSize + gapSize),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
             //-----------------------------------------------------------------------
-            if(matrix[i][ii] == 5)
-            {
-                if (player1.hasKey == true)
-                {
-                    ofSetColor(255,255,255);
-                    ofDrawBitmapString("key",(i+boardExtenderx) * (squareSize + gapSize) + (squareSize / 4),(ii+boardExtedery) * (squareSize + gapSize) + (squareSize / 2));
-                }
+            //if(matrix[i][ii] == 5)
+            //{
+             //   if (player1.hasKey == true)
+             //   {
+            //        ofSetColor(255,255,255);
+            //        ofDrawBitmapString("key",(i+boardExtenderx) * (squareSize + gapSize) + (squareSize / 4),(ii+boardExtedery) * (squareSize + gapSize) + (squareSize / 2));
+             //   }
 
-            }
+            //}
             //-----------------------------------------------------------------------
         }
     }
-    statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);//------------------------------------------------------------------------------------------=====:O
+    ofSetColor(0,0,0);
+    ofRect((player1.playerx+boardExtenderx) * (squareSize + gapSize),(player1.playery+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+    statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);
+    //player rectangle
+
  }
  void board::tileSetup ()
  {
@@ -167,11 +150,9 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
                 row[j] = 4;
             }
         }
-
         matrix.push_back(row); // push each row after you fill it
         level.push_back(row);
     }
-
     // Once you fill the matrix, you can use it like native arrays
     for(size_t i = 0; i < N; ++i)
     {
@@ -180,18 +161,12 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             cout << matrix[i][j] << " ";
         }
 
-        cout << endl;
+       // cout << endl;
     }
  }
  void player::playerController (int key,Matrix matrix,const size_t N)
  {
-//    matrix[enemy1.EnemyX][enemy1.EnemyY]=PreviousEnemy;
-//    matrix[enemy2.EnemyX][enemy2.EnemyY]=PreviousEnemy2;
-//
-//    enemy1.aiMovement(key,playerx,playery,N,matrix,moves);
-//    enemy2.aiMovement(key,playerx,playery,N,matrix,moves);
-//
-//    matrix[playerx][playery] = Previous;
+
      if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
         if (matrix[playerx + 1][playery] == 3 and hasKey == false)
@@ -228,31 +203,13 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playery++;
     }
-//    if (hasKey == true or variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
-//    {
-//        matrix[playerx][playery] = 1;
-//        variableForGettingRidOfKeySpaceWhenYouCollectIt--;
-//    }
-
-
-//    Previous = matrix[playerx][playery];
-//    matrix[playerx][playery] = 5;
-//    PreviousEnemy = matrix[enemy1.EnemyX][enemy1.EnemyY];
-//    PreviousEnemy2 = matrix[enemy2.EnemyX][enemy2.EnemyY];
-//    matrix[enemy1.EnemyX][enemy1.EnemyY] = 6;
-//    matrix[enemy2.EnemyX][enemy2.EnemyY] = 6;
 
  }
 void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix,int moves)
  {
-     if (x == 0)
-     {
-         EnemyX = ofRandom(N);
-         EnemyY = ofRandom(N);
-     }
      if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd'))
      {
-         if ((abs(playerx-EnemyX) < 4) and (abs(playery-EnemyY) < 4))
+         if ((abs(playerx-EnemyX) < 2) and (abs(playery-EnemyY) < 2))
          {
             if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
             {
@@ -273,7 +230,7 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
          }
          else
          {
-            direction = ofRandom(4);
+            direction = ofRandom(0,4);
             if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
             {
                 EnemyX++;
@@ -292,21 +249,65 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
             }
          }
      }
-     x++;
+     //x++;
  }
-
+void level::Setup()
+{
+    board1.tileSetup();
+    enemies1.setup(board1.N);
+}
  void level::gameplay()
 {
-    if (moves == 0)
-    {
-        board1.tileSetup();
-    }
+
     board1.boardDrawer(key,moves,pressedCheck);
+    enemies1.drawer(board1.boardExtenderx,board1.squareSize,board1.gapSize,board1.boardExtedery);
+}
+void level::keyPressed(int key)
+{
+    moves++;
+    if (pressedCheck == true)
+    {
+        pressedCheck = false;
+    }
+    else if (pressedCheck == false)
+    {
+        pressedCheck = true;
+    }
+    enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix,moves);
+}
+void Enemies::drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery)
+{
+    ofSetColor(255,255,255);
+    for(int i=0; i<enemylist.size(); i++)
+    {
+        ofRect((enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+    }
+}
+void Enemies::setup(const size_t N)
+{
+    for (int k=0; k<9; k++)
+    {
+        Enemy enemy;
+        enemylist.push_back(enemy);
+        enemylist[k].EnemyX = ofRandom(0,N);
+        enemylist[k].EnemyY = ofRandom(0,N);
+    }
+}
+void Enemies::updater(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves)
+{
+    ofSeedRandom();
+    for(int i=0; i<enemylist.size(); i++)
+    {
+
+        enemylist[i].aiMovement(key,playerx,playery,N,matrix,moves);
+        //cout <<"enemy number"<<i<<"X"<<enemylist[i].EnemyX<<"Y"<<enemylist[i].EnemyY<<endl;
+
+    }
 }
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-
+    level1.Setup();
 }
 
 //--------------------------------------------------------------
@@ -319,6 +320,7 @@ void ofApp::update()
 void ofApp::draw()
 {
     level1.gameplay();
+
 }
 
 //--------------------------------------------------------------
@@ -328,18 +330,10 @@ void ofApp::keyPressed(int key)
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key)
+{
     level1.key = key;
-    level1.moves++;
-    if (level1.pressedCheck == true)
-    {
-        level1.pressedCheck = false;
-    }
-    else if (level1.pressedCheck == false)
-    {
-        level1.pressedCheck = true;
-    }
-    //board1.moves++;
+    level1.keyPressed(key);
 }
 
 //---------------------------------------const size_t N-----------------------
