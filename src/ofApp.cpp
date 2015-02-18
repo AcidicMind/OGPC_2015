@@ -1,4 +1,3 @@
-
 #include "ofApp.h"
 #include <math.h>
 
@@ -167,7 +166,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
  void player::playerController (int key,Matrix matrix,const size_t N)
  {
 
-     if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
+     if (((key == 'd') or (key == 'D'))and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
         if (matrix[playerx + 1][playery] == 3 and hasKey == false)
         {
@@ -176,7 +175,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx++;
     }
-    if ((key == 'a') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
+    if (((key == 'a') or (key == 'A')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
         if (matrix[playerx - 1][playery] == 3 and hasKey == false)
         {
@@ -185,7 +184,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx--;
     }
-    if ((key == 'w') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
+    if (((key == 'w') or (key == 'W')) and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
         if (matrix[playerx][playery - 1] == 3 and hasKey == false)
         {
@@ -194,7 +193,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playery--;
     }
-    if ((key == 's') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
+    if (((key == 's') or (key == 'S')) and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
         if (matrix[playerx][playery + 1] == 3 and hasKey == false)
         {
@@ -207,7 +206,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
  }
 void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix matrix,int moves)
  {
-     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd'))
+     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd') or (key == 'W') or (key =='A') or (key == 'S') or ( key == 'D'))
      {
          if ((abs(playerx-EnemyX) < 2) and (abs(playery-EnemyY) < 2))
          {
