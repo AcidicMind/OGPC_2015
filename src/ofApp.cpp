@@ -7,30 +7,31 @@ void statbar::mainbar (int health, int mana, int steps,bool hasKey)
     int manaSpacing = 100;
     ofSetColor(0,0,0);
     ofSetCircleResolution(100);
-    ofRect(ofGetScreenWidth()-120,0,120,ofGetScreenHeight());
+    ofRect(ofGetScreenWidth()-(ofGetScreenWidth()/16),0,(ofGetScreenWidth()/16),ofGetScreenHeight());
     ofSetColor(255,0,0);
     for(int h = 0; h != health; h++)//draws health icons
     {
         ofSetColor(255,0,0);
-        ofCircle(ofGetScreenWidth()-80,heartSpacing,10);
+        ofCircle(ofGetScreenWidth()-(((ofGetScreenWidth()/16)/3)*2),heartSpacing,10);
         heartSpacing = heartSpacing + 30;
     }
     for(int h = 0; h != mana; h++)//draws mana icons
     {
         ofSetColor(0,255,0);
-        ofCircle(ofGetScreenWidth()-40,manaSpacing,10);
+        ofCircle(ofGetScreenWidth()-((ofGetScreenWidth()/16)/3),manaSpacing,10);
         manaSpacing = manaSpacing + 30;
     }
     if (hasKey == true)
     {
         ofSetColor(245,184,0);
-        ofCircle(ofGetScreenWidth()-60,300,30);
+        ofCircle(ofGetScreenWidth()-((ofGetScreenWidth()/16)/2),300,30);
     }
 
     //nothing harmful
 }
 void board::boardDrawer (int key,int moves,bool pressedCheck)
  {
+
     if (pressedCheck == previousKeyCheck)
     {
 
@@ -65,34 +66,38 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             }
             if (matrix[i][ii] == 2)
             {
-                ofSetColor(184,46,0);//destructable object
+                ofSetColor(255,102,51);//destructable object
             }
             if (matrix[i][ii] == 3)
             {
                 ofSetColor(105,255,51);//key
             }
-            if (matrix[i][ii] == 4)
+            if (matrix[i][ii] == 4 and player1.hasKey == true)
             {
-                ofSetColor(255,99,51);//exit
+                ofSetColor(255,0,0);//exit
+            }
+            else if (matrix[i][ii] == 4 and player1.hasKey == false)
+            {
+                ofSetColor(255,204,51);
             }
 
             //-----------------------------------------------------------------------
-            while ((ofGetScreenWidth()-120)%(squareSize+gapSize) != 0 or ofGetScreenHeight()%(squareSize+gapSize) != 0)
-            {
-                squareSize++;
-            }
+//            if (ofGetScreenHeight() == 1080)
+//            {
+//                squareSize == 60;
+//            }
             boardExtenderx;
             boardExtedery;
-            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2-1 and (ofGetScreenWidth()-120) < N*(squareSize+gapSize) and player1.playerx + (((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2)+1 < N)
+            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize+gapSize) and player1.playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize+gapSize))+1)/2) < N)
             {
                 boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2))*-1;
             }
-            if (player1.playery > (ofGetScreenHeight()/(squareSize+gapSize))/2-1 and ofGetScreenHeight() < N*(squareSize+gapSize) and player1.playery + ((ofGetScreenHeight()/(squareSize+gapSize))/2)-1 < N)
+            if (player1.playery > (ofGetScreenHeight()/(squareSize+gapSize))/2-1 and ofGetScreenHeight() < N*(squareSize+gapSize) and player1.playery + (((ofGetScreenHeight()/(squareSize+gapSize))-1)/2) < N)
             {
                 boardExtedery=(player1.playery-((ofGetScreenHeight()/(squareSize+gapSize))/2))*-1;
             }
             //-----------------------------------------------------------------------
-            ofRect((i+boardExtenderx) * (squareSize + gapSize),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+            ofRect((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
             //-----------------------------------------------------------------------
             //if(matrix[i][ii] == 5)
             //{
@@ -107,7 +112,16 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
     }
     ofSetColor(0,0,0);
-    ofRect((player1.playerx+boardExtenderx) * (squareSize + gapSize),(player1.playery+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+    ofRect((player1.playerx+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(player1.playery+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+    if (ofGetScreenHeight() % 60 != 0)
+    {
+        ofSetColor(0,0,0);
+        ofRect(0,ofGetScreenHeight() - (ofGetScreenHeight() % 60),ofGetScreenWidth(),ofGetScreenHeight() % 60);
+    }
+    if (ofGetScreenWidth() % 60 != 0)
+    {
+        ofRect(0,0,((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),ofGetScreenHeight());
+    }
     statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);
     //player rectangle
 
@@ -166,7 +180,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
  void player::playerController (int key,Matrix matrix,const size_t N)
  {
 
-     if (((key == 'd') or (key == 'D'))and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
+     if ((key == 'd') or (key == 'D') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
         if (matrix[playerx + 1][playery] == 3 and hasKey == false)
         {
@@ -175,7 +189,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx++;
     }
-    if (((key == 'a') or (key == 'A')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
+    if ((key == 'a') or (key == 'A') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
         if (matrix[playerx - 1][playery] == 3 and hasKey == false)
         {
@@ -184,7 +198,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx--;
     }
-    if (((key == 'w') or (key == 'W')) and (playery > 0) and (matrix[playerx][playery - 1] !=0))
+    if ((key == 'w') or (key == 'W') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
         if (matrix[playerx][playery - 1] == 3 and hasKey == false)
         {
@@ -193,7 +207,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playery--;
     }
-    if (((key == 's') or (key == 'S')) and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
+    if ((key == 's') or (key == 'S') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
         if (matrix[playerx][playery + 1] == 3 and hasKey == false)
         {
@@ -279,7 +293,7 @@ void Enemies::drawer(int boardExtenderx,int squareSize,int gapSize,int boardExte
     ofSetColor(255,255,255);
     for(int i=0; i<enemylist.size(); i++)
     {
-        ofRect((enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+        ofRect((enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
     }
 }
 void Enemies::setup(const size_t N)
