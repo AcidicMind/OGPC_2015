@@ -180,7 +180,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
  void player::playerController (int key,Matrix matrix,const size_t N)
  {
 
-     if ((key == 'd') or (key == 'D') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
+     if (((key == 'd') or (key == 'D')) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
     {
         if (matrix[playerx + 1][playery] == 3 and hasKey == false)
         {
@@ -189,7 +189,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx++;
     }
-    if ((key == 'a') or (key == 'A') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
+    if (((key == 'a') or (key == 'A')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
     {
         if (matrix[playerx - 1][playery] == 3 and hasKey == false)
         {
@@ -198,7 +198,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx--;
     }
-    if ((key == 'w') or (key == 'W') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
+    if (((key == 'w') or (key == 'W')) and (playery > 0) and (matrix[playerx][playery - 1] !=0))
     {
         if (matrix[playerx][playery - 1] == 3 and hasKey == false)
         {
@@ -207,7 +207,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playery--;
     }
-    if ((key == 's') or (key == 'S') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
+    if (((key == 's') or (key == 'S')) and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
     {
         if (matrix[playerx][playery + 1] == 3 and hasKey == false)
         {
