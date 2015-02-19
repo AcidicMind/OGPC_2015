@@ -45,7 +45,7 @@ public:
     int exitCount = 0;//number of exits checker -- supposed to be only one
     const size_t N = 50; // the dimension of the matrix
     int gapSize = 0;
-    int squareSize = 55;
+    int squareSize = 60;
     int boardExtenderx=0;
     int boardExtedery=0;
 
