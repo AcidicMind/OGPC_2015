@@ -31,7 +31,7 @@ public:
     bool hasKey = false;//do we have the key yet???
     int health = 3;
     int steps = 0;
-    int mana = 3; //magic power
+    int mana = 10; //magic power
 
 };
 
@@ -73,6 +73,7 @@ public:
     void gameplay();
     void Setup();
     void keyPressed(int key);
+    void mousePressed(int x, int y);
     int moves = 0;
     int key;
     bool setup=true;
