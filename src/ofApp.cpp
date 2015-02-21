@@ -82,47 +82,21 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             }
 
             //-----------------------------------------------------------------------
-//            if (ofGetScreenHeight() == 1080)
-//            {
-//                squareSize == 60;
-//            }
             boardExtenderx;
             boardExtedery;
-            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize+gapSize) and player1.playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize+gapSize))+1)/2) < N)
+            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize) and player1.playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize))+1)/2) < N)
             {
-                boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-120-(squareSize/2))/(squareSize+gapSize))/2))*-1;
+                boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-ofGetScreenWidth()/16-squareSize/2)/(squareSize))/2))*-1;
             }
-            if (player1.playery > (ofGetScreenHeight()/(squareSize+gapSize))/2-1 and ofGetScreenHeight() < N*(squareSize+gapSize) and player1.playery + (((ofGetScreenHeight()/(squareSize+gapSize))-1)/2) < N)
+            if (player1.playery > (ofGetScreenHeight()/(squareSize))/2-1 and ofGetScreenHeight() < N*(squareSize) and player1.playery + (((ofGetScreenHeight()/(squareSize))-1)/2) < N)
             {
-                boardExtedery=(player1.playery-((ofGetScreenHeight()/(squareSize+gapSize))/2))*-1;
+                boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
             }
-            //-----------------------------------------------------------------------
-            ofRect((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
-            //-----------------------------------------------------------------------
-            //if(matrix[i][ii] == 5)
-            //{
-             //   if (player1.hasKey == true)
-             //   {
-            //        ofSetColor(255,255,255);
-            //        ofDrawBitmapString("key",(i+boardExtenderx) * (squareSize + gapSize) + (squareSize / 4),(ii+boardExtedery) * (squareSize + gapSize) + (squareSize / 2));
-             //   }
-
-            //}
-            //-----------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------------------------------------------------------
+            ofRect((i+boardExtenderx)*squareSize + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery)*squareSize,squareSize,squareSize);
         }
     }
-    ofSetColor(0,0,0);
-    ofRect((player1.playerx+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(player1.playery+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
-    if (ofGetScreenHeight() % 60 != 0)
-    {
-        ofSetColor(0,0,0);
-        ofRect(0,ofGetScreenHeight() - (ofGetScreenHeight() % 60),ofGetScreenWidth(),ofGetScreenHeight() % 60);
-    }
-    if (ofGetScreenWidth() % 60 != 0)
-    {
-        ofRect(0,0,((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),ofGetScreenHeight());
-    }
-    statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);
+
     //player rectangle
 
  }
@@ -180,7 +154,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
  void player::playerController (int key,Matrix matrix,const size_t N)
  {
 
-     if (((key == 'd') or (key == 'D')) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
+     if (((key == 'd') or (key == 'D')) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0) and (matrix[playerx + 1][playery] != 2))
     {
         if (matrix[playerx + 1][playery] == 3 and hasKey == false)
         {
@@ -189,7 +163,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx++;
     }
-    if (((key == 'a') or (key == 'A')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
+    if (((key == 'a') or (key == 'A')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0) and (matrix[playerx - 1][playery] != 2))
     {
         if (matrix[playerx - 1][playery] == 3 and hasKey == false)
         {
@@ -198,7 +172,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playerx--;
     }
-    if (((key == 'w') or (key == 'W')) and (playery > 0) and (matrix[playerx][playery - 1] !=0))
+    if (((key == 'w') or (key == 'W')) and (playery > 0) and (matrix[playerx][playery - 1] != 0) and (matrix[playerx][playery - 1] != 2))
     {
         if (matrix[playerx][playery - 1] == 3 and hasKey == false)
         {
@@ -207,7 +181,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         }
         playery--;
     }
-    if (((key == 's') or (key == 'S')) and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
+    if (((key == 's') or (key == 'S')) and (playery < N - 1) and (matrix[playerx][playery + 1] != 0) and (matrix[playerx][playery + 1] != 2))
     {
         if (matrix[playerx][playery + 1] == 3 and hasKey == false)
         {
@@ -224,19 +198,19 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
      {
          if ((abs(playerx-EnemyX) < 2) and (abs(playery-EnemyY) < 2))
          {
-            if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
+            if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0) and (matrix[EnemyX+1][EnemyY] != 2))
             {
                 EnemyX++;
             }
-            if (playerx < EnemyX and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0))
+            if (playerx < EnemyX and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0) and (matrix[EnemyX-1][EnemyY] != 2))
             {
                 EnemyX--;
             }
-            if (playery < EnemyY and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0))
+            if (playery < EnemyY and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1] != 0) and (matrix[EnemyX][EnemyY-1] != 2))
             {
                 EnemyY--;
             }
-            if (playery > EnemyY and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0))
+            if (playery > EnemyY and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0) and (matrix[EnemyX][EnemyY+1] != 2))
             {
                 EnemyY++;
             }
@@ -244,19 +218,19 @@ void Enemy::aiMovement (int key,int playerx,int playery,const size_t N,Matrix ma
          else
          {
             direction = ofRandom(0,4);
-            if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0))
+            if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0) and (matrix[EnemyX+1][EnemyY] != 2))
             {
                 EnemyX++;
             }
-            if ((direction == 1) and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0))
+            if ((direction == 1) and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0) and (matrix[EnemyX-1][EnemyY] != 2))
             {
                 EnemyX--;
             }
-            if ((direction==2) and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0))
+            if ((direction==2) and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0) and (matrix[EnemyX][EnemyY-1] != 2))
             {
                 EnemyY--;
             }
-            if ((direction == 3) and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0))
+            if ((direction == 3) and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0) and (matrix[EnemyX][EnemyY+1] != 2))
             {
                 EnemyY++;
             }
@@ -274,6 +248,20 @@ void level::Setup()
 
     board1.boardDrawer(key,moves,pressedCheck);
     enemies1.drawer(board1.boardExtenderx,board1.squareSize,board1.gapSize,board1.boardExtedery);
+        ofSetColor(0,0,0);
+    ofRect((board1.player1.playerx+board1.boardExtenderx) * (board1.squareSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(board1.player1.playery+board1.boardExtedery) * (board1.squareSize),board1.squareSize,board1.squareSize);
+    board1.statbar1.mainbar(board1.player1.health,board1.player1.mana,board1.player1.steps,board1.player1.hasKey);
+
+    if (ofGetScreenHeight() % 60 != 0)//these two if statements are here to make the screen adjust for weird resoluitions
+    {
+        ofSetColor(0,0,0);
+        ofRect(0,ofGetScreenHeight() - (ofGetScreenHeight() % 60),ofGetScreenWidth(),ofGetScreenHeight() % 60);
+    }
+    if ((ofGetScreenWidth() - (ofGetScreenWidth()/16)) % 60 != 0)
+    {
+        ofSetColor(0,0,0);
+        ofRect(0,0,((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),ofGetScreenHeight());
+    }
 }
 void level::keyPressed(int key)
 {
@@ -288,9 +276,17 @@ void level::keyPressed(int key)
     }
     enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix,moves);
 }
+void level::mousePressed(int x, int y)
+{
+    if (board1.matrix[x][y] == 2 and board1.player1.mana != 0 and (((board1.player1.playerx+1 == x or board1.player1.playerx-1== x) and (board1.player1.playery == y or board1.player1.playery == y)) or ((board1.player1.playerx == x or board1.player1.playerx== x) and (board1.player1.playery-1 == y or board1.player1.playery+1 == y))))//check if destructable block and then check if the player has mana
+    {
+        board1.matrix[x][y] = 1;//destroy the destructable block
+        board1.player1.mana--;//lose mana when destroyed a block
+    }
+}
 void Enemies::drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery)
 {
-    ofSetColor(255,255,255);
+    ofSetColor(255,99,255);
     for(int i=0; i<enemylist.size(); i++)
     {
         ofRect((enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
@@ -311,10 +307,7 @@ void Enemies::updater(int key,int playerx,int playery,const size_t N,Matrix matr
     ofSeedRandom();
     for(int i=0; i<enemylist.size(); i++)
     {
-
         enemylist[i].aiMovement(key,playerx,playery,N,matrix,moves);
-        //cout <<"enemy number"<<i<<"X"<<enemylist[i].EnemyX<<"Y"<<enemylist[i].EnemyY<<endl;
-
     }
 }
 //--------------------------------------------------------------
@@ -349,7 +342,7 @@ void ofApp::keyReleased(int key)
     level1.keyPressed(key);
 }
 
-//---------------------------------------const size_t N-----------------------
+//--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
 
 }
@@ -362,10 +355,10 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-//    int xCoord = x / (board1.squareSize + board1.gapSize);
-//    int yCoord = y / (board1.squareSize + board1.gapSize);
-//    cout << "mousePressed: " << xCoord << ", " << yCoord << " button: " << button << endl;
-
+    int xCoord = ((x - ((ofGetScreenWidth() - (ofGetScreenWidth()/16)) % 60) ) / level1.board1.squareSize) - level1.board1.boardExtenderx;
+    int yCoord = (y / level1.board1.squareSize) - level1.board1.boardExtedery;
+    cout << "mousePressed: " << xCoord << ", " << yCoord << " button: " << button << endl;
+    level1.mousePressed(xCoord,yCoord);
 }
 
 //--------------------------------------------------------------
