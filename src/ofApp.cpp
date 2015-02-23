@@ -1,3 +1,4 @@
+
 #include "ofApp.h"
 #include <math.h>
 
@@ -93,7 +94,10 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
                 boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
             }
             //--------------------------------------------------------------------------------------------------------------------------------------------
-            ofRect((i+boardExtenderx)*squareSize + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery)*squareSize,squareSize,squareSize);
+            if (((i+boardExtenderx)<ofGetScreenWidth()/squareSize) and ((ii+boardExtedery)<ofGetScreenHeight()/squareSize)and((i+boardExtenderx)>=0) and ((ii+boardExtedery>=0)))
+            {
+                 ofRect((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+            }
         }
     }
 
