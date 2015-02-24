@@ -52,6 +52,16 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             previousKeyCheck = true;
         }
     }
+    boardExtenderx;
+    boardExtedery;
+    if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize) and player1.playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize))+1)/2) < N)
+    {
+        boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-ofGetScreenWidth()/16-squareSize/2)/(squareSize))/2))*-1;
+    }
+    if (player1.playery > (ofGetScreenHeight()/(squareSize))/2-1 and ofGetScreenHeight() < N*(squareSize) and player1.playery + (((ofGetScreenHeight()/(squareSize))-1)/2) < N)
+    {
+        boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
+    }
     for (int i = 0; i < N; i++)
     {
         for (int ii = 0; ii < N; ii++)
@@ -82,16 +92,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             }
 
             //-----------------------------------------------------------------------
-            boardExtenderx;
-            boardExtedery;
-            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize) and player1.playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize))+1)/2) < N)
-            {
-                boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-ofGetScreenWidth()/16-squareSize/2)/(squareSize))/2))*-1;
-            }
-            if (player1.playery > (ofGetScreenHeight()/(squareSize))/2-1 and ofGetScreenHeight() < N*(squareSize) and player1.playery + (((ofGetScreenHeight()/(squareSize))-1)/2) < N)
-            {
-                boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
-            }
+            
             //--------------------------------------------------------------------------------------------------------------------------------------------
             ofRect((i+boardExtenderx)*squareSize + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery)*squareSize,squareSize,squareSize);
         }
