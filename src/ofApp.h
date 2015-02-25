@@ -7,7 +7,7 @@ typedef vector<int> Row;
 class Enemy
 {
 public:
-    void aiMovement(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves);// typedef not declared yet
+    void aiMovement(int key,int playerx,int playery,int N,Matrix matrix,int moves);// typedef not declared yet
     int direction=0;
     int EnemyX=10;
     int EnemyY=10;
@@ -23,7 +23,7 @@ public:
 class player
 {
 public:
-    void playerController(int key,Matrix matrix,const size_t N);
+    void playerController(int key,Matrix matrix,int N);
     void playerDrawer();
     int playerx = 0;
     int playery = 0;
@@ -43,12 +43,13 @@ public:
     int wallcount = 0;
     int keyCount = 0;//number of keys checker -- supposed to be only one
     int exitCount = 0;//number of exits checker -- supposed to be only one
-    const size_t N = 50; // the dimension of the matrix
+    int N = 50; // the dimension of the matrix
     int gapSize = 0;
     int squareSize = 60;
     int boardExtenderx=0;
     int boardExtedery=0;
-
+    int exitX=0;
+    int exitY=0;
     bool previousKeyCheck = false;
 
     vector<int>wall;
@@ -61,8 +62,8 @@ public:
 class Enemies
 {
     public:
-    void setup(const size_t N);
-    void updater(int key,int playerx,int playery,const size_t N,Matrix matrix,int moves);
+    void setup(int N);
+    void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves);
     void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
     vector<Enemy> enemylist;
 
@@ -82,7 +83,15 @@ public:
     Enemies enemies1;
 
 };
-
+class Game
+{
+public:
+    void levelSetup();
+    void newLevel();
+    int levelNumber=3;
+    int currentLevel=0;
+    vector<level> levelList;
+};
 class ofApp : public ofBaseApp{
 
 public:
@@ -98,6 +107,7 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    bool pressedbool=true;
-    level level1;
+    Game game1;
+    bool pressedBool=true;
+    //level level1;
 };
