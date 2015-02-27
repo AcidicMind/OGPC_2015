@@ -66,23 +66,24 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
     {
         for (int ii = 0; ii < N; ii++)
         {
+
             if (matrix[i][ii] == 0)
             {
                 ofSetColor(184,138,0);//wall
             }
-            if (matrix[i][ii] == 1)
+            else if (matrix[i][ii] == 1)
             {
                 ofSetColor(255,204,51);//floor
             }
-            if (matrix[i][ii] == 2)
+            else if (matrix[i][ii] == 2)
             {
                 ofSetColor(255,102,51);//destructable object
             }
-            if (matrix[i][ii] == 3)
+            else if (matrix[i][ii] == 3)
             {
                 ofSetColor(105,255,51);//key
             }
-            if (matrix[i][ii] == 4 and player1.hasKey == true)
+            else if (matrix[i][ii] == 4 and player1.hasKey == true)
             {
                 ofSetColor(255,0,0);//exit
             }
@@ -94,19 +95,19 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             //-----------------------------------------------------------------------
             if (((i+boardExtenderx)<ofGetScreenWidth()/squareSize) and ((ii+boardExtedery)<ofGetScreenHeight()/squareSize)and((i+boardExtenderx)>=0) and ((ii+boardExtedery>=0)))
             {
+
                  ofRect((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(ii+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
             }
             //--------------------------------------------------------------------------------------------------------------------------------------------
 
         }
     }
-
-    //player rectangle
+    //ofRect((exitX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(exitY.playery+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+    //exit
 
  }
  void board::tileSetup ()
  {
-     ofSeedRandom();
      int keyX = ofRandom(N);
      exitX = ofRandom(N);
      int keyY = ofRandom(N);
@@ -130,7 +131,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             if ((row[j] == 1) and (wallcount < 1))
             {
                 //row[j]=1;
-                wallcount = 3;
+                wallcount = 2;
             }
             if (keyX == i and keyY == j)//placing key
             {
@@ -145,15 +146,73 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         level.push_back(row);
     }
     // Once you fill the matrix, you can use it like native arrays
-    for(size_t i = 0; i < N; ++i)
+    //for(int i = 0; i < keyX; ++i)
+    //{
+    //    for(int j = 0; j < keyY; ++j)
+    //    {
+    //         matrix[i][j]=1;
+    //    }
+    //}
+    int i=0;
+    int j=0;
+    while ((i<keyX))
     {
-        for(size_t j = 0; j < N; ++j)
+        i++;
+        //j++;
+        //cout<< i<<endl;
+        if (i==keyX)
         {
-            cout << matrix[i][j] << " ";
+            break;
         }
-
-       // cout << endl;
+        if (matrix[i][j]==0)
+        {
+            matrix[i][j]=1;
+        }
+        //matrix[i][j+1]=1;
     }
+    while ((j<keyY))
+    {
+        //i++;
+        j++;
+        //cout<< j<<endl;
+        if (j==keyY)
+        {
+            break;
+        }
+        if (matrix[i][j]==0)
+        {
+            matrix[i][j]=1;
+        }
+        
+    }
+    int k=0;
+    int l=0;
+    while ((k<exitX))
+    {
+        k++;
+        
+        if (k==exitX)
+        {
+            break;
+        }
+        if (matrix[k][l]==0)
+        {
+            matrix[k][l]=1;
+        }
+    }
+    while ((l<exitY))
+    {
+        l++;
+        if (l==exitY)
+        {
+            break;
+        }
+        if (matrix[k][l]==0)
+        {
+            matrix[k][l]=1;
+        }
+    }
+
  }
  void player::playerController (int key,Matrix matrix,int N)
  {
@@ -308,7 +367,6 @@ void Enemies::setup(int N)
 }
 void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix,int moves)
 {
-    ofSeedRandom();
     for(int i=0; i<enemylist.size(); i++)
     {
         enemylist[i].aiMovement(key,playerx,playery,N,matrix,moves);
@@ -319,7 +377,7 @@ void Game::levelSetup()
     for (int k=0; k<levelNumber; k++)
     {
         level Level;
-        Level.board1.N=30+k*2;
+        Level.board1.N=10+k*2;
         Level.Setup();
         levelList.push_back(Level);
     }
@@ -336,6 +394,8 @@ void Game::newLevel()
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+    ofSeedRandom();
+    ofSetFrameRate(30);
     game1.levelSetup();
 }
 
