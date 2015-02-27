@@ -66,7 +66,8 @@ class Enemies
     void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves);
     void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
     vector<Enemy> enemylist;
-
+    int enemiesX=0;
+    int enemiesY=0;
 };
 class level
 {
