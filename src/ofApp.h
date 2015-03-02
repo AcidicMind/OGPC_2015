@@ -1,5 +1,28 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxSpriteSheetRenderer.h"
+
+static animation_t walkAnimation = // This is where settings of the animation are declaresd
+{	0,	/* index		*/
+	0,	/* frame		*/
+	1,	/* totalframes	*/
+	1,	/* width		*/
+	1,	/* height		*/
+	75,	/* frameduration*/
+	0,	/* nexttick		*/
+	-1,	/* loops		*/
+	-1,	/* finalindex	*/
+	1	/* frameskip	*/
+};
+
+struct basicSprite { // Spprite struct
+	animation_t animation;
+	ofPoint pos;
+};
+
+// These must go in the class where sprites are created
+//ofxSpriteSheetRenderer * spriteRenderer;
+//vector<basicSprite> sprites;
 
 typedef vector< vector<int> > Matrix;
 typedef vector<int> Row;
