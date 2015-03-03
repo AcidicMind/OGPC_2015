@@ -259,7 +259,7 @@ void Enemy::aiMovement (int key,int playerx,int playery,int N,Matrix matrix,int 
  {
      if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd') or (key == 'W') or (key =='A') or (key == 'S') or ( key == 'D'))
      {
-         if ((abs(playerx-EnemyX) < 2) and (abs(playery-EnemyY) < 2))
+         if ((abs(playerx-EnemyX) < 3) and (abs(playery-EnemyY) < 3))
          {
             if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0) and (matrix[EnemyX+1][EnemyY] != 2))
             {
@@ -315,6 +315,11 @@ void level::Setup()
     ofRect((board1.player1.playerx+board1.boardExtenderx) * (board1.squareSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(board1.player1.playery+board1.boardExtedery) * (board1.squareSize),board1.squareSize,board1.squareSize);
     board1.statbar1.mainbar(board1.player1.health,board1.player1.mana,board1.player1.steps,board1.player1.hasKey);
 
+    if (enemies1.playerDamaged==true)
+    {
+        board1.player1.health--;
+        enemies1.playerDamaged=false;
+    }
     if (ofGetScreenHeight() % 60 != 0)//these two if statements are here to make the screen adjust for weird resoluitions
     {
         ofSetColor(0,0,0);
@@ -337,7 +342,7 @@ void level::keyPressed(int key)
     {
         pressedCheck = true;
     }
-    enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix,moves);
+    enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix,moves,board1.player1.health);
 }
 void level::mousePressed(int x, int y)
 {
@@ -357,7 +362,7 @@ void Enemies::drawer(int boardExtenderx,int squareSize,int gapSize,int boardExte
 }
 void Enemies::setup(int N)
 {
-    for (int k=0; k<N/5; k++)
+    for (int k=0; k<N-15; k++)
     {
         Enemy enemy;
         enemylist.push_back(enemy);
@@ -365,7 +370,7 @@ void Enemies::setup(int N)
         enemylist[k].EnemyY = ofRandom(0,N);
     }
 }
-void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix,int moves)
+void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix,int moves,int health)
 {
     for(int i=0; i<enemylist.size(); i++)
     {
@@ -374,10 +379,19 @@ void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix,
         enemylist[i].aiMovement(key,playerx,playery,N,matrix,moves);
         for (int j=0; j<enemylist.size(); j++)
         {
-            if (((enemylist[i].EnemyX==enemylist[j].EnemyX)and(enemylist[i].EnemyY==enemylist[j].EnemyY)and(i!=j))or((enemylist[i].EnemyX==playerx)and(enemylist[i].EnemyY==playery)and(i!=j)))
+            if ((enemylist[i].EnemyX==enemylist[j].EnemyX)and(enemylist[i].EnemyY==enemylist[j].EnemyY)and(i!=j))
             {
                 enemylist[i].EnemyX=enemiesX;
                 enemylist[i].EnemyY=enemiesY;
+            }
+            if ((enemylist[i].EnemyX==playerx)and(enemylist[i].EnemyY==playery)and(i!=j))
+            {
+                enemylist[i].EnemyX=enemiesX;
+                enemylist[i].EnemyY=enemiesY;
+                if (health>0)
+                {
+                    playerDamaged=true;
+                }
             }
         }
     }
