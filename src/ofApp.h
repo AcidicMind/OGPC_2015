@@ -2,7 +2,7 @@
 #include "ofMain.h"
 #include "ofxSpriteSheetRenderer.h"
 
-static animation_t walkAnimation = // This is where settings of the animation are declaresd
+static animation_t walkAnimation =
 {	0,	/* index		*/
 	0,	/* frame		*/
 	1,	/* totalframes	*/
@@ -15,14 +15,10 @@ static animation_t walkAnimation = // This is where settings of the animation ar
 	1	/* frameskip	*/
 };
 
-struct basicSprite { // Spprite struct
+struct dTileSprite {
 	animation_t animation;
 	ofPoint pos;
 };
-
-// These must go in the class where sprites are created
-//ofxSpriteSheetRenderer * spriteRenderer;
-//vector<basicSprite> sprites;
 
 typedef vector< vector<int> > Matrix;
 typedef vector<int> Row;
@@ -81,6 +77,9 @@ public:
 
     player player1;
     statbar statbar1;
+    
+    ofxSpriteSheetRenderer * spriteRenderer;
+    vector<dTileSprite> sprites;
 };
 class Enemies
 {
