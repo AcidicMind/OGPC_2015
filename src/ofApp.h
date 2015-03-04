@@ -86,9 +86,10 @@ class Enemies
 {
     public:
     void setup(int N);
-    void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves);
+    void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves,int health);
     void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
     vector<Enemy> enemylist;
+    bool playerDamaged=false;
     int enemiesX=0;
     int enemiesY=0;
 };
@@ -133,5 +134,4 @@ public:
     void gotMessage(ofMessage msg);
     Game game1;
     bool pressedBool=true;
-    //level level1;
 };
