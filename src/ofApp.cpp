@@ -31,6 +31,17 @@ void statbar::mainbar (int health, int mana, int steps,bool hasKey)
 }
 void board::boardDrawer (int key,int moves,bool pressedCheck)
  {
+    //Renders sprites
+    spriteRenderer->clear();
+    spriteRenderer->update(ofGetElapsedTimeMillis());
+
+	if(sprites.size()>0)
+	{
+		for(int i=sprites.size()-1;i>=0;i--)
+		{
+				spriteRenderer->addCenteredTile(&sprites[i].animation, sprites[i].pos.x, sprites[i].pos.y);
+		}
+	}
 
     if (pressedCheck == previousKeyCheck)
     {
@@ -62,6 +73,9 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             {
                 boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
             }
+            
+    sprites.clear(); //Makes sure that the vector does not overload on sprites. This will delete the previous sprites so that there will be room for new ones.
+    
     for (int i = 0; i < N; i++)
     {
         for (int ii = 0; ii < N; ii++)
@@ -78,6 +92,10 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             else if (matrix[i][ii] == 2)
             {
                 ofSetColor(255,102,51);//destructable object
+                dTileSprite newSprite; //Creates a sprite where destructable objects will be
+                newSprite.pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30);
+                newSprite.animation = walkAnimation;
+                sprites.push_back(newSprite);
             }
             else if (matrix[i][ii] == 3)
             {
@@ -104,6 +122,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
     }
     //ofRect((exitX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(exitY.playery+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
     //exit
+    spriteRenderer->draw(); //Draws the sprites
 
  }
  void board::tileSetup ()
@@ -212,6 +231,10 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             matrix[k][l]=1;
         }
     }
+    //Setup for renderer
+    spriteRenderer = new ofxSpriteSheetRenderer(1, 1000, 0, 60);
+    spriteRenderer->loadTexture("spriteSheetExample.png", 256, GL_NEAREST);
+    ofEnableAlphaBlending();
 
  }
  void player::playerController (int key,Matrix matrix,int N)
