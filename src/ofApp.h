@@ -1,5 +1,24 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxSpriteSheetRenderer.h"
+
+static animation_t walkAnimation =
+{	0,	/* index		*/
+	0,	/* frame		*/
+	1,	/* totalframes	*/
+	1,	/* width		*/
+	1,	/* height		*/
+	75,	/* frameduration*/
+	0,	/* nexttick		*/
+	-1,	/* loops		*/
+	-1,	/* finalindex	*/
+	1	/* frameskip	*/
+};
+
+struct dTileSprite {
+	animation_t animation;
+	ofPoint pos;
+};
 
 typedef vector< vector<int> > Matrix;
 typedef vector<int> Row;
@@ -58,6 +77,9 @@ public:
 
     player player1;
     statbar statbar1;
+
+    ofxSpriteSheetRenderer * spriteRenderer;
+    vector<dTileSprite> sprites;
 };
 class Enemies
 {
@@ -66,7 +88,8 @@ class Enemies
     void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves);
     void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
     vector<Enemy> enemylist;
-
+    int enemiesX=0;
+    int enemiesY=0;
 };
 class level
 {
@@ -109,5 +132,4 @@ public:
     void gotMessage(ofMessage msg);
     Game game1;
     bool pressedBool=true;
-    //level level1;
 };
