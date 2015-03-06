@@ -39,7 +39,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
 	{
 		for(int i=sprites.size()-1;i>=0;i--)
 		{
-				spriteRenderer->addCenteredTile(&sprites[i].animation, sprites[i].pos.x, sprites[i].pos.y);
+				spriteRenderer->addCenteredTile(&sprites[i]->animation, sprites[i]->pos.x, sprites[i]->pos.y);
 		}
 	}
 
@@ -83,19 +83,33 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
 
             if (matrix[i][ii] == 0)
             {
-                ofSetColor(184,138,0);//wall
+                //wall
+                //ofSetColor(184,138,0);
+                dTileSprite * blockSprite = new dTileSprite();//Creates a sprite where wall blocks will be
+                blockSprite->pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30); //set its position
+                blockSprite->animation = blockAnimation;
+                blockSprite->animation.frame = 0;
+                sprites.push_back(blockSprite); //add our sprite to the vector
             }
             else if (matrix[i][ii] == 1)
             {
-                ofSetColor(255,204,51);//floor
+                //floor
+                //ofSetColor(255,204,51);
+                dTileSprite * blockSprite = new dTileSprite();//Creates a sprite where floor tiles will be
+                blockSprite->pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30); //set its position
+                blockSprite->animation = blockAnimation;
+                blockSprite->animation.frame = 1;
+                sprites.push_back(blockSprite); //add our sprite to the vector
             }
             else if (matrix[i][ii] == 2)
             {
-                ofSetColor(255,102,51);//destructable object
-                dTileSprite newSprite; //Creates a sprite where destructable objects will be
-                newSprite.pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30);
-                newSprite.animation = walkAnimation;
-                sprites.push_back(newSprite);
+                //destructable object
+                //ofSetColor(255,102,51);
+                dTileSprite * blockSprite = new dTileSprite();//Creates a sprite where destructable blocks will be
+                blockSprite->pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30); //set its position
+                blockSprite->animation = blockAnimation;
+                blockSprite->animation.frame = 2;
+                sprites.push_back(blockSprite); //add our sprite to the vector
             }
             else if (matrix[i][ii] == 3)
             {
