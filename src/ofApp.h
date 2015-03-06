@@ -2,7 +2,7 @@
 #include "ofMain.h"
 #include "ofxSpriteSheetRenderer.h"
 
-static animation_t walkAnimation =
+static animation_t blockAnimation =
 {	0,	/* index		*/
 	0,	/* frame		*/
 	1,	/* totalframes	*/
