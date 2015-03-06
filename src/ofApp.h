@@ -79,7 +79,7 @@ public:
     statbar statbar1;
 
     ofxSpriteSheetRenderer * spriteRenderer;
-    vector<dTileSprite> sprites;
+    vector<dTileSprite *> sprites;
 };
 class Enemies
 {
