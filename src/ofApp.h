@@ -2,7 +2,7 @@
 #include "ofMain.h"
 #include "ofxSpriteSheetRenderer.h"
 
-static animation_t walkAnimation =
+static animation_t blockAnimation =
 {	0,	/* index		*/
 	0,	/* frame		*/
 	1,	/* totalframes	*/
@@ -26,7 +26,7 @@ typedef vector<int> Row;
 class Enemy
 {
 public:
-    void aiMovement(int key,int playerx,int playery,int N,Matrix matrix,int moves);// typedef not declared yet
+    void aiMovement(int key,int playerx,int playery,int N,Matrix matrix/*int moves*/);// typedef not declared yet
     int direction=0;
     int EnemyX=10;
     int EnemyY=10;
@@ -48,7 +48,7 @@ public:
     int playery = 0;
     int variableForGettingRidOfKeySpaceWhenYouCollectIt = 0;
     bool hasKey = false;//do we have the key yet???
-    int health = 3;
+    int health = 5;
     int steps = 0;
     int mana = 10; //magic power
 
@@ -77,19 +77,20 @@ public:
 
     player player1;
     statbar statbar1;
-    
+
     ofxSpriteSheetRenderer * spriteRenderer;
-    vector<dTileSprite> sprites;
+    vector<dTileSprite *> sprites;
 };
 class Enemies
 {
     public:
     void setup(int N);
-    void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves);
+    void updater(int key,int playerx,int playery,int N,Matrix matrix/*,int moves*/,int health);
     void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
     vector<Enemy> enemylist;
     int enemiesX=0;
     int enemiesY=0;
+    int playerDamaged=false;
 };
 class level
 {
@@ -111,7 +112,7 @@ class Game
 public:
     void levelSetup();
     void newLevel();
-    int levelNumber=3;
+    int levelNumber=5;
     int currentLevel=0;
     vector<level> levelList;
 };
@@ -132,5 +133,4 @@ public:
     void gotMessage(ofMessage msg);
     Game game1;
     bool pressedBool=true;
-    //level level1;
 };
