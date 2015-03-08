@@ -39,7 +39,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
 	{
 		for(int i=sprites.size()-1;i>=0;i--)
 		{
-				spriteRenderer->addCenteredTile(&sprites[i].animation, sprites[i].pos.x, sprites[i].pos.y);
+				spriteRenderer->addCenteredTile(&sprites[i]->animation, sprites[i]->pos.x, sprites[i]->pos.y);
 		}
 	}
 
@@ -73,9 +73,9 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             {
                 boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
             }
-            
+
     sprites.clear(); //Makes sure that the vector does not overload on sprites. This will delete the previous sprites so that there will be room for new ones.
-    
+
     for (int i = 0; i < N; i++)
     {
         for (int ii = 0; ii < N; ii++)
@@ -83,19 +83,33 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
 
             if (matrix[i][ii] == 0)
             {
-                ofSetColor(184,138,0);//wall
+                //wall
+                //ofSetColor(184,138,0);
+                dTileSprite * blockSprite = new dTileSprite();//Creates a sprite where wall blocks will be
+                blockSprite->pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30); //set its position
+                blockSprite->animation = blockAnimation;
+                blockSprite->animation.frame = 0;
+                sprites.push_back(blockSprite); //add our sprite to the vector
             }
             else if (matrix[i][ii] == 1)
             {
-                ofSetColor(255,204,51);//floor
+                //floor
+                //ofSetColor(255,204,51);
+                dTileSprite * blockSprite = new dTileSprite();//Creates a sprite where floor tiles will be
+                blockSprite->pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30); //set its position
+                blockSprite->animation = blockAnimation;
+                blockSprite->animation.frame = 1;
+                sprites.push_back(blockSprite); //add our sprite to the vector
             }
             else if (matrix[i][ii] == 2)
             {
-                ofSetColor(255,102,51);//destructable object
-                dTileSprite newSprite; //Creates a sprite where destructable objects will be
-                newSprite.pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30);
-                newSprite.animation = walkAnimation;
-                sprites.push_back(newSprite);
+                //destructable object
+                //ofSetColor(255,102,51);
+                dTileSprite * blockSprite = new dTileSprite();//Creates a sprite where destructable blocks will be
+                blockSprite->pos.set((i+boardExtenderx) * (squareSize + gapSize) + ((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60) + 30,(ii+boardExtedery) * (squareSize + gapSize) + 30); //set its position
+                blockSprite->animation = blockAnimation;
+                blockSprite->animation.frame = 2;
+                sprites.push_back(blockSprite); //add our sprite to the vector
             }
             else if (matrix[i][ii] == 3)
             {
@@ -164,21 +178,11 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         matrix.push_back(row); // push each row after you fill it
         level.push_back(row);
     }
-    // Once you fill the matrix, you can use it like native arrays
-    //for(int i = 0; i < keyX; ++i)
-    //{
-    //    for(int j = 0; j < keyY; ++j)
-    //    {
-    //         matrix[i][j]=1;
-    //    }
-    //}
     int i=0;
     int j=0;
     while ((i<keyX))
     {
         i++;
-        //j++;
-        //cout<< i<<endl;
         if (i==keyX)
         {
             break;
@@ -187,13 +191,10 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         {
             matrix[i][j]=1;
         }
-        //matrix[i][j+1]=1;
     }
     while ((j<keyY))
     {
-        //i++;
         j++;
-        //cout<< j<<endl;
         if (j==keyY)
         {
             break;
@@ -202,14 +203,12 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         {
             matrix[i][j]=1;
         }
-
     }
     int k=0;
     int l=0;
     while ((k<exitX))
     {
         k++;
-
         if (k==exitX)
         {
             break;
@@ -233,7 +232,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
     }
     //Setup for renderer
     spriteRenderer = new ofxSpriteSheetRenderer(1, 1000, 0, 60);
-    spriteRenderer->loadTexture("spriteSheetExample.png", 256, GL_NEAREST);
+    spriteRenderer->loadTexture("Block_Sheet.png", 180, GL_NEAREST);
     ofEnableAlphaBlending();
 
  }
@@ -278,8 +277,9 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
     }
 
  }
-void Enemy::aiMovement (int key,int playerx,int playery,int N,Matrix matrix,int moves)
+void Enemy::aiMovement (int key,int playerx,int playery,int N,Matrix matrix/*int moves*/)
  {
+     bool mover=false;
      if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd') or (key == 'W') or (key =='A') or (key == 'S') or ( key == 'D'))
      {
          if ((abs(playerx-EnemyX) < 2) and (abs(playery-EnemyY) < 2))
@@ -303,22 +303,29 @@ void Enemy::aiMovement (int key,int playerx,int playery,int N,Matrix matrix,int 
          }
          else
          {
-            direction = ofRandom(0,4);
-            if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0) and (matrix[EnemyX+1][EnemyY] != 2))
+            while(mover==false)
             {
-                EnemyX++;
-            }
-            else if ((direction == 1) and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0) and (matrix[EnemyX-1][EnemyY] != 2))
-            {
-                EnemyX--;
-            }
-            else if ((direction==2) and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0) and (matrix[EnemyX][EnemyY-1] != 2))
-            {
-                EnemyY--;
-            }
-            else if ((direction == 3) and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0) and (matrix[EnemyX][EnemyY+1] != 2))
-            {
-                EnemyY++;
+                direction = ofRandom(0,4);
+                if ((direction == 0) and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0) and (matrix[EnemyX+1][EnemyY] != 2))
+                {
+                    EnemyX++;
+                    mover=true;
+                }
+                else if ((direction == 1) and (EnemyX > 0) and (matrix[EnemyX-1][EnemyY]!=0) and (matrix[EnemyX-1][EnemyY] != 2))
+                {
+                    EnemyX--;
+                    mover=true;
+                }
+                else if ((direction==2) and (EnemyY > 0) and (matrix[EnemyX][EnemyY-1]!=0) and (matrix[EnemyX][EnemyY-1] != 2))
+                {
+                    EnemyY--;
+                    mover=true;
+                }
+                else if ((direction == 3) and (EnemyY < N-1) and (matrix[EnemyX][EnemyY+1] != 0) and (matrix[EnemyX][EnemyY+1] != 2))
+                {
+                    EnemyY++;
+                    mover=true;
+                }
             }
          }
      }
@@ -360,7 +367,12 @@ void level::keyPressed(int key)
     {
         pressedCheck = true;
     }
-    enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix,moves);
+    enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix/*moves*/,board1.player1.health);
+    if (enemies1.playerDamaged==true)
+    {
+        board1.player1.health--;
+        enemies1.playerDamaged=false;
+    }
 }
 void level::mousePressed(int x, int y)
 {
@@ -388,19 +400,28 @@ void Enemies::setup(int N)
         enemylist[k].EnemyY = ofRandom(0,N);
     }
 }
-void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix,int moves)
+void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix/*int moves*/,int health)
 {
     for(int i=0; i<enemylist.size(); i++)
     {
         enemiesX=enemylist[i].EnemyX;
         enemiesY=enemylist[i].EnemyY;
-        enemylist[i].aiMovement(key,playerx,playery,N,matrix,moves);
+        enemylist[i].aiMovement(key,playerx,playery,N,matrix/*moves*/);
         for (int j=0; j<enemylist.size(); j++)
         {
-            if (((enemylist[i].EnemyX==enemylist[j].EnemyX)and(enemylist[i].EnemyY==enemylist[j].EnemyY)and(i!=j))or((enemylist[i].EnemyX==playerx)and(enemylist[i].EnemyY==playery)and(i!=j)))
+            if ((enemylist[i].EnemyX==enemylist[j].EnemyX)and(enemylist[i].EnemyY==enemylist[j].EnemyY)and(i!=j))
             {
                 enemylist[i].EnemyX=enemiesX;
                 enemylist[i].EnemyY=enemiesY;
+            }
+            if ((enemylist[i].EnemyX==playerx)and(enemylist[i].EnemyY==playery)and(i!=j))
+            {
+                enemylist[i].EnemyX=enemiesX;
+                enemylist[i].EnemyY=enemiesY;
+                if (health>0)
+                {
+                    playerDamaged=true;
+                }
             }
         }
     }
@@ -422,7 +443,6 @@ void Game::newLevel()
     {
         currentLevel++;
     }
-
 }
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -435,16 +455,12 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
-
-
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
     game1.levelList[game1.currentLevel].gameplay();
-    //level1.gameplay();
-
 }
 
 //--------------------------------------------------------------
@@ -455,9 +471,8 @@ void ofApp::keyPressed(int key)
         game1.levelList[game1.currentLevel].key = key;
         game1.levelList[game1.currentLevel].keyPressed(key);
         game1.newLevel();
-        pressedBool=false;
+        //pressedBool=false;
     //}
-
 }
 
 //--------------------------------------------------------------
