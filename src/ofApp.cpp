@@ -1,203 +1,256 @@
-
 #include "ofApp.h"
-void board::boardDrawer ()
- {
-    for (int i = 0; i < N; i++)
-    {
-        for (int ii = 0; ii < N; ii++)
-        {
-            if (matrix[i][ii] == 0)
-            {
-                ofSetColor(200,50,255);//wall
-            }
-            if (matrix[i][ii] == 1)
-            {
-                ofSetColor(255,150,0);//floor
-            }
-            if (matrix[i][ii] == 2)
-            {
-                ofSetColor(0,255 , 255);//destructable object
-            }
-            if (matrix[i][ii] == 3)
-            {
-                ofSetColor(105,255,51);//key
-            }
-            if (matrix[i][ii] == 4)
-            {
-                ofSetColor(255,99,51);//exit
-            }
-            if(matrix[i][ii] == 5)
-            {
-                ofSetColor(0,0,0);//player
 
-            }
-            ofRect(i * (squareSize + gapSize),ii * (squareSize + gapSize),squareSize,squareSize);
-        }
-    }
- }
- void board::tileSetup ()
- {
-     ofSeedRandom();
-     int keyX = ofRandom(N);
-     int exitX = ofRandom(N);
-     int keyY = ofRandom(N);
-     int exitY = ofRandom(N);
-    for(size_t i = 0; i < N; ++i)
-    {
-        Row row(N);
-        wallcount = 0;
 
-        for(size_t j = 0; j < N; ++j)
-        {
-            wallcount--;
-            if (wallcount > 0)
-            {
-                row[j] = 1;
-            }
-            else
-            {
-                row[j] = ofRandom(0,3);// Picking a random tile!
-            }
-            if ((row[j] == 1) and (wallcount < 1))
-            {
-                //row[j]=1;
-                wallcount = 3;
-            }
-            if (keyX == i and keyY == j)//placing key
-            {
-                row[j] = 3;
-            }
-            if (exitX == i and exitY == j)//placing exit
-            {
-                row[j] = 4;
-            }
-        }
-
-        matrix.push_back(row); // push each row after you fill it
-        level.push_back(row);
-    }
-
-    // Once you fill the matrix, you can use it like native arrays
-    for(size_t i = 0; i < N; ++i)
-    {
-        for(size_t j = 0; j < N; ++j)
-        {
-            cout << matrix[i][j] << " ";
-        }
-
-        cout << endl;
-    }
- }
- void board::playerController ()
- {
-    //enemy1.aiMovement();
-    matrix[playerx][playery] = Previous;
-     if ((key == 'd') and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0))
-    {
-        if (matrix[playerx + 1][playery] == 3)
-        {
-            hasKey = true;
-        }
-        playerx++;
-    }
-    if ((key == 'a') and (playerx > 0) and (matrix[playerx - 1][playery] !=0))
-    {
-        if (matrix[playerx - 1][playery] == 3)
-        {
-            hasKey = true;
-        }
-        playerx--;
-    }
-    if ((key == 'w') and (playery > 0) and (matrix[playerx][playery - 1] !=0))
-    {
-        if (matrix[playerx][playery - 1] == 3)
-        {
-            hasKey = true;
-        }
-        playery--;
-    }
-    if ((key == 's') and (playery < N - 1) and (matrix[playerx][playery + 1] !=0))
-    {
-        if (matrix[playerx][playery + 1] == 3)
-        {
-            hasKey = true;
-        }
-        playery++;
-    }
-    Previous = matrix[playerx][playery];
-    cout << "Player X" << playerx << endl;
-    cout << "Player Y" << playery << "\n" << endl;
-    matrix[playerx][playery] = 5;
- }
-// void Enemy::aiMovement ()
-// {
-//     cout<<"blah"<<board1.playerx-1<< endl;
-//     if((board1.key == OF_KEY_RIGHT)or(board1.key == OF_KEY_LEFT)or(board1.key == OF_KEY_UP)or(board1.key == OF_KEY_DOWN))
-//     {
-//         if (abs(board1.playerx-EnemyX)or(abs(board1.playery-EnemyY)))
-//         {
-//
-//         }
-//         else
-//         {
-//            direction=ofRandom(0,3);
-//            if ((direction == 0)and (EnemyX<board1.N-1)and(board1.matrix[EnemyX+1][EnemyY]!=0))
-//            {
-//                EnemyX++;
-//            }
-//            if ((direction == 1)and (EnemyX>0)and(board1.matrix[EnemyX-1][EnemyY]!=0))
-//            {
-//                EnemyX--;
-//            }
-//            if ((direction==2)and(EnemyY>0)and(board1.matrix[EnemyX][EnemyY-1]!=0))
-//            {
-//                EnemyY++;
-//            }
-//            if ((direction == 3)and (EnemyY<board1.N-1)and(board1.matrix[EnemyX][EnemyY+1]!=0))
-//            {
-//                EnemyY++;
-//            }
-//         }
-//         board1.matrix[EnemyX][EnemyY]=3;
-//         cout << EnemyX<< "x"<<EnemyY<<"y"<<endl;
-//     }
-// }
 //--------------------------------------------------------------
-void ofApp::setup()
-{
-    board1.tileSetup();
+void ofApp::setup(){
+    img.loadImage("water.jpg");
+
+
+
+
+
+
 
 }
 
 //--------------------------------------------------------------
-void ofApp::update()
-{
-    //board1.matrix[board1.Previousplayerx][board1.Previousplayery]=board1.Previous;
+void ofApp::update(){
+
+    winheight =ofGetWindowHeight();
+    winwidth =ofGetWindowWidth();
+    LRpadding =winwidth*.05;
+    TBpadding =winheight*.05;
+    interiorpadding =winwidth/20;
+    textsize =(winheight*winwidth)*.000035;
+    smalltextsize = (winheight*winwidth)*.000017;
+
+    titlefont.loadFont("DALEK___.ttf",winheight/15);
+    textfont.loadFont("DIOGENES.ttf",textsize);
+    smalltextfont.loadFont("DIOGENES.ttf",smalltextsize);
+
+//    Titlecontainer.x =(winwidth*.175);
+//    Titlecontainer.y = TBpadding;
+//    Titlecontainer.width = (winwidth*.65);
+//    Titlecontainer.height = winheight*.15;
+
+    TwoPcontainer.x = LRpadding;
+    TwoPcontainer.y = (winheight*.7);
+    TwoPcontainer.width = (winwidth-(LRpadding*2));
+    TwoPcontainer.height = (winheight-TwoPcontainer.y-(TBpadding)+winheight*.03);
+
+    OnePcontainer.x = winwidth*.225+LRpadding;
+    OnePcontainer.y = (winheight*.41);
+    OnePcontainer.width = TwoPcontainer.width/2;
+    OnePcontainer.height = TwoPcontainer.height;
+
+
+    About.x = LRpadding/3;
+    About.y = TBpadding/3;
+    About.width = winwidth*.08;
+    About.height = winheight*.04;
+
+    Options.x = winwidth-winwidth*.08-LRpadding/3;
+    Options.y = TBpadding/3;
+    Options.width = winwidth*.08;
+    Options.height = winheight*.04;
+
+
+//-----------------------Adventurer option button-------------------------------------
+    Adventurer1.x = LRpadding*1.25;
+    Adventurer1.y = (winheight*.73);
+    Adventurer1.width = winwidth/2-LRpadding*1.25-(interiorpadding/2);
+    Adventurer1.height = (winheight-Adventurer1.y-TBpadding);              //dimensions and padding for adventurer button
+
+    Adventurer2.x = (LRpadding*1.25+(.05*Adventurer1.width));
+    Adventurer2.y = (Adventurer1.y+(.05*Adventurer1.height));
+    Adventurer2.width = (.9*Adventurer1.width);
+    Adventurer2.height = (.9*Adventurer1.height);
+//----------------------Builder option button---------------------------------------
+    Builder1.x = (winwidth/2+interiorpadding/2);
+    Builder1.y = (winheight*.73);
+    Builder1.width = Adventurer1.width;                   //dimensions and padding for builder button
+    Builder1.height = Adventurer1.height;
+
+    Builder2.x = (Builder1.x+(.05*Builder1.width));
+    Builder2.y = (Builder1.y+(.05*Builder1.height));
+    Builder2.width = Adventurer2.width;
+    Builder2.height = Adventurer2.height;
+
+//-----------------------Single player adventurer option button-------------------------------------
+    SinglePlayer1.x = (OnePcontainer.x+winwidth*.016);
+    SinglePlayer1.y = (winheight*.44);
+    SinglePlayer1.width = Builder1.width;
+    SinglePlayer1.height =Builder1.height;
+
+    SinglePlayer2.x = (SinglePlayer1.x+(.05*SinglePlayer1.width));
+    SinglePlayer2.y = (SinglePlayer1.y+(.05*SinglePlayer1.height));
+    SinglePlayer2.width = Builder2.width;
+    SinglePlayer2.height = Builder2.height;
+}
+
+//--------------------------------------------------------------
+void ofApp::draw(){
+img.resize(winwidth,winheight);
+ img.draw(0,0);
+
+    ofColor colorOne;
+    ofColor colorTwo;
+
+    colorOne.set (0, 0, 0);
+    colorTwo.set (255, 100, 50);
+
+   // ofBackgroundGradient(colorTwo, colorOne, OF_GRADIENT_CIRCULAR);
+
+    ofSetColor(230,230,230,10);
+    ofRectRounded(Titlecontainer, 20);
+
+    ofSetColor(180,180,180,20);
+    ofRectRounded(OnePcontainer, 16);
+
+    ofSetColor(180,180,180,20);
+    ofRectRounded(TwoPcontainer, 16);
+
+    ofSetColor(100,100,100,Aboutopacity);
+    ofRectRounded(About,8);
+
+    ofSetColor(100,100,100,Optionsopacity);
+    ofRectRounded(Options,8);
+
+
+//----------------------Adventurer option button-------------------------------
+    Adventurerext.r= 230;
+    Adventurerext.g= 230;
+    Adventurerext.b= 230;
+
+    Adventurerint.r= advred;
+    Adventurerint.g= 40;
+    Adventurerint.b= 40;
+
+    ofSetColor(Adventurerext,AdventurerExtopacity);
+    ofRectRounded(Adventurer1, 8);                                   //fix the corners
+
+    ofSetColor(Adventurerint,AdventurerIntopacity);
+    ofRectRounded(Adventurer2, 8);
+
+//----------------------Builder option button-------------------------------
+
+    Builderext.r= 230;
+    Builderext.g= 230;
+    Builderext.b= 230;
+
+    Builderint.r= bldrred;
+    Builderint.g= 40;
+    Builderint.b= 40;
+
+    ofSetColor(Builderext,BuilderExtopacity);
+    ofRectRounded(Builder1, 8);
+
+    ofSetColor(Builderint,BuilderIntopacity);
+    ofRectRounded(Builder2, 8);
+
+
+
+//----------------------Single Player option button-------------------------------
+
+    Singleext.r= 230;
+    Singleext.g= 230;
+    Singleext.b= 230;
+
+    Singleint.r= singred;
+    Singleint.g= 40;
+    Singleint.b= 40;
+
+    ofSetColor(Singleext,SingleExtopacity);
+    ofRectRounded(SinglePlayer1, 8);
+
+    ofSetColor(Singleint,SingleIntopacity);
+    ofRectRounded(SinglePlayer2, 8);
+
+//-----------------------------------BUTTON TEXT-------------------------------------------
+    ofSetColor(210,210,210);
+    titlefont.drawString("PHARAOH",(winwidth/2-.46*titlefont.getSize()*7),(winheight*.08+(titlefont.getSize()/2)));
+
+    textfont.drawString("Single Player",(SinglePlayer2.x+.5*SinglePlayer2.width-(.52*textfont.getSize()*6.5)),(SinglePlayer2.y+.5*SinglePlayer2.height+(textfont.getSize()/2)));
+
+    textfont.drawString("Adventurer",(Adventurer2.x+.5*Adventurer2.width-(.6*textfont.getSize()*5)),(Adventurer2.y+.5*Adventurer2.height+(textfont.getSize()/2)));
+
+    textfont.drawString("Builder",(Builder2.x+.5*Builder2.width-(.52*textfont.getSize()*3.5)),(Builder2.y+.5*Builder2.height+(textfont.getSize()/2)));
+
+    smalltextfont.drawString("About",(About.x+.5*About.width-(.68*smalltextfont.getSize()*2.5)),(About.y+.5*About.height+(smalltextfont.getSize()/2)));
+
+    smalltextfont.drawString("Options",(Options.x+.5*Options.width-(.62*smalltextfont.getSize()*3.5)),(Options.y+.5*Options.height+(smalltextfont.getSize()/2)));
+
+
 
 }
 
 //--------------------------------------------------------------
-void ofApp::draw()
-{
-    board1.boardDrawer();
+void ofApp::keyPressed(int key){
 
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key)
-{
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    board1.key=key;
-    //enemy1.aiMovement();
-    board1.playerController();
+
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
+
+
+//-----------------------------HOVER FEATURE------------------------------------------
+
+    //adventurer button
+    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height))){
+        AdventurerExtopacity=120;
+        AdventurerIntopacity=500;
+        advred=50;
+    }
+    else{
+        AdventurerExtopacity=40;
+        AdventurerIntopacity=150;
+        advred=40;
+    }
+
+    //builder button
+    if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height))){
+        BuilderExtopacity=120;
+        BuilderIntopacity=500;
+        bldrred=50;
+    }
+    else{
+        BuilderExtopacity=40;
+        BuilderIntopacity=150;
+        bldrred=40;
+    }
+
+    //single player button
+    if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height))){
+        SingleExtopacity=120;
+        SingleIntopacity=500;
+        singred=50;
+    }
+    else{
+        SingleExtopacity=40;
+        SingleIntopacity=150;
+        singred=40;
+    }
+    //about button
+    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height))){
+        Aboutopacity=40;
+    }
+    else{
+        Aboutopacity=20;
+    }
+
+    //options button
+    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))){
+        Optionsopacity=40;
+    }
+    else{
+        Optionsopacity=20;
+    }
 
 }
 
@@ -207,44 +260,61 @@ void ofApp::mouseDragged(int x, int y, int button){
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button)
-{
-//    board1.matrix[board1.playerx][board1.playery] = board1.Previous;
-//    cout << "mousePressed: " << x / (board1.squareSize + board1.gapSize) << ", " << y / (board1.squareSize + board1.gapSize) << " button: " << button << endl;
-//    int xCoord = x / (board1.squareSize + board1.gapSize);
-//    int yCoord = y / (board1.squareSize + board1.gapSize);
-//    if (board1.playerx == xCoord)
-//    {
-//        if (board1.playery + 1 == yCoord and board1.matrix[board1.playerx][board1.playery + 1] != 0)
-//        {
-//            //if (board1.matrix[board1.playery + 1][board1.playery] != 0)
-//            //{
-//            board1.playery = yCoord;
-//            //}
-//        }
-//        if (board1.playery - 1 == yCoord and board1.matrix[board1.playerx][board1.playery - 1] != 0)
-//        {
-//            board1.playery = yCoord;
-//        }
-//    }
-//    if (board1.playery == yCoord)
-//    {
-//        if (board1.playerx + 1 == xCoord and board1.matrix[board1.playerx + 1][board1.playery] != 0)
-//        {
-//            board1.playerx = xCoord;
-//        }
-//        if (board1.playerx - 1 == xCoord and board1.matrix[board1.playerx - 1][board1.playery] != 0)
-//        {
-//            board1.playerx = xCoord;
-//        }
-//    }
-//    board1.Previous = board1.matrix[board1.playerx][board1.playery];
-//    board1.matrix[board1.playerx][board1.playery] = 5;
+void ofApp::mousePressed(int x, int y, int button){
+    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height))){
+        AdventurerExtopacity=200;
+        AdventurerIntopacity=500;
+        advred=100;
+    }
+     if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height))){
+        BuilderExtopacity=200;
+        BuilderIntopacity=500;
+        bldrred=100;
+    }
+     if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height))){
+        SingleExtopacity=200;
+        SingleIntopacity=500;
+        singred=100;
+    }
+    //about button
+    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height))){
+        Aboutopacity=200;
+    }
+
+    //options button
+    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))){
+        Optionsopacity=200;
+    }
+
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
 
+    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height))){
+        AdventurerExtopacity=120;
+        AdventurerIntopacity=500;
+        advred=50;
+    }
+    if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height))){
+        BuilderExtopacity=120;
+        BuilderIntopacity=500;
+        bldrred=50;
+    }
+    if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height))){
+        SingleExtopacity=120;
+        SingleIntopacity=500;
+        singred=50;
+    }
+
+    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height))){
+        Aboutopacity=40;
+    }
+
+    //options button
+    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))){
+        Optionsopacity=40;
+    }
 }
 
 //--------------------------------------------------------------
