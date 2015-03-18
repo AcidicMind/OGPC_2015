@@ -3,8 +3,7 @@
 
 //========================================================================
 int main( ){
-    board board1;
-	ofSetupOpenGL((board1.squareSize + board1.gapSize) * board1.N,(board1.squareSize + board1.gapSize) * board1.N,OF_WINDOW);			// <-------- setup the GL context
+	ofSetupOpenGL(1024,768,OF_WINDOW);			// <-------- setup the GL context
 
 	// this kicks off the running of my app
 	// can be OF_WINDOW or OF_FULLSCREEN
