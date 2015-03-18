@@ -1,40 +1,7 @@
 #pragma once
+
 #include "ofMain.h"
 
-class board
-{
-    public:
-    void boardDrawer();
-    void tileSetup();
-    void playerController();
-    int playerx = 0;
-    int playery = 0;
-    int Previous = 0;
-    int wallcount = 0;
-    int key = 0; //key pressed
-    int keyCount = 0;//number of keys checker -- supposed to be only one
-    int exitCount = 0;//number of exits checker -- supposed to be only one
-    bool hasKey = false;//do we have the key yet???
-    const size_t N = 12; // the dimension of the matrix
-    int gapSize = 5;
-    int squareSize = 60;
-    typedef vector< vector<int> > Matrix;
-    typedef vector<int> Row;
-    vector<int>wall;
-    Matrix matrix;
-    Matrix level;
-    //Enemy enemy1;
-};
-//class Enemy
-//{
-//    public:
-//    //board board1;
-//    void aiMovement();
-//    int direction=0;
-//    int EnemyX=9;
-//    int EnemyY=9;
-//    int health=10;
-//};
 class ofApp : public ofBaseApp{
 
 	public:
@@ -51,6 +18,52 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-        board board1;
-        //Enemy enemy1;
+
+		int winheight;
+		int winwidth;
+		int LRpadding;
+		int TBpadding;
+		int interiorpadding;
+		int textsize;
+		int smalltextsize;
+
+		ofColor Adventurerext;
+		ofColor Adventurerint;
+		ofColor Builderext;
+		ofColor Builderint;
+		ofColor Singleext;
+		ofColor Singleint;
+
+		int AdventurerExtopacity=40;
+		int AdventurerIntopacity=120;
+		int BuilderExtopacity=40;
+        int BuilderIntopacity=120;
+        int SingleExtopacity =40;
+        int SingleIntopacity =120;
+        int Aboutopacity;
+        int Optionsopacity;
+        int advred=40;
+        int bldrred=40;
+        int singred=40;
+
+        ofRectangle TwoPcontainer;
+        ofRectangle OnePcontainer;
+        ofRectangle Titlecontainer;
+        ofRectangle SinglePlayer1;
+        ofRectangle SinglePlayer2;
+		ofRectangle Adventurer1;
+		ofRectangle Adventurer2;
+		ofRectangle Builder1;
+		ofRectangle Builder2;
+		ofRectangle About;
+		ofRectangle Options;
+
+		ofTrueTypeFont titlefont;
+		ofTrueTypeFont textfont;
+		ofTrueTypeFont smalltextfont;
+
+
+		ofImage img;
+
+
 };
