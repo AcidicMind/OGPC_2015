@@ -1,3 +1,4 @@
+
 #pragma once
 #include "ofMain.h"
 #include "ofxSpriteSheetRenderer.h"
@@ -8,7 +9,7 @@ static animation_t blockAnimation =
 	1,	/* totalframes	*/
 	1,	/* width		*/
 	1,	/* height		*/
-	75,	/* frameduration*/
+	100,	/* frameduration*/
 	0,	/* nexttick		*/
 	-1,	/* loops		*/
 	-1,	/* finalindex	*/
@@ -22,16 +23,24 @@ struct dTileSprite {
 
 typedef vector< vector<int> > Matrix;
 typedef vector<int> Row;
-
+typedef vector<dTileSprite *> tilerow;
+//class gameSprites
+//{
+//public:
+//    void
+//    ofxSpriteSheetRenderer * allSpriteRenderer;
+//    vector<dTileSprite *> sprites;
+//};
 class Enemy
 {
 public:
-    void aiMovement(int key,int playerx,int playery,int N,Matrix matrix/*int moves*/);// typedef not declared yet
+    void aiMovement(int key,int playerx,int playery,int N,Matrix matrix,int moves);// typedef not declared yet
     int direction=0;
     int EnemyX=10;
     int EnemyY=10;
     int health=10;
-    //int x = 0;
+    int startFrame=0;
+    int endFrame=0;
 };
 class statbar // Display of various information in a corner hovering above the main screen
 {
@@ -43,15 +52,17 @@ class player
 {
 public:
     void playerController(int key,Matrix matrix,int N);
+    void playerDamage();
     void playerDrawer();
     int playerx = 0;
     int playery = 0;
     int variableForGettingRidOfKeySpaceWhenYouCollectIt = 0;
     bool hasKey = false;//do we have the key yet???
-    int health = 5;
+    int health = 100;
     int steps = 0;
     int mana = 10; //magic power
-
+    int startFrame=0;
+    int endFrame=0;
 };
 
 class board
@@ -69,28 +80,37 @@ public:
     int boardExtedery=0;
     int exitX=0;
     int exitY=0;
+    int keyX=0;
+    int keyY=0;
     bool previousKeyCheck = false;
 
     vector<int>wall;
     Matrix matrix;
-    Matrix level;
+    //Matrix level;
 
     player player1;
     statbar statbar1;
 
-    ofxSpriteSheetRenderer * spriteRenderer;
-    vector<dTileSprite *> sprites;
+    ofxSpriteSheetRenderer * BlockSpriteRenderer;
+    vector<vector<dTileSprite *> > sprites;
+
+    int j=0;
+    bool mousepressed=false;
+    //vector<blocksprite *>
 };
 class Enemies
 {
     public:
     void setup(int N);
-    void updater(int key,int playerx,int playery,int N,Matrix matrix/*,int moves*/,int health);
+    void updater(int key,int playerx,int playery,int N,Matrix matrix,int moves,int health);
     void drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
     vector<Enemy> enemylist;
+    bool playerDamaged=false;
     int enemiesX=0;
     int enemiesY=0;
-    int playerDamaged=false;
+
+    ofxSpriteSheetRenderer * EnemySpriteRenderer;
+    vector<dTileSprite *> sprites;
 };
 class level
 {
@@ -105,7 +125,9 @@ public:
     bool pressedCheck = true;
     board board1;
     Enemies enemies1;
-
+    ofxSpriteSheetRenderer * CharacterSpriteRenderer;
+    vector<dTileSprite *> sprite;
+    int i=0;
 };
 class Game
 {
