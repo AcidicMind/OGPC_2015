@@ -1,7 +1,6 @@
 
 #include "ofApp.h"
 #include <math.h>
-
 void statbar::mainbar (int health, int mana, int steps,bool hasKey)
 {
     //int heartSpacing = 100;
@@ -31,42 +30,21 @@ void statbar::mainbar (int health, int mana, int steps,bool hasKey)
 
     //nothing harmful
 }
-void board::boardDrawer (int key,int moves,bool pressedCheck)
+void board::boardDrawer (int playerx,int playery, int key,int moves,bool pressedCheck)
  {
     //Renders sprites
     BlockSpriteRenderer->clear();
     BlockSpriteRenderer->update(ofGetElapsedTimeMillis());
-    if (pressedCheck == previousKeyCheck)
-    {
-
-        player1.playerController(key,matrix,N);
-
-        if (player1.hasKey == true and player1.variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
-        {
-            matrix[player1.playerx][player1.playery] = 1;
-            player1.variableForGettingRidOfKeySpaceWhenYouCollectIt--;
-        }
-
-        if (previousKeyCheck == true)
-        {
-            previousKeyCheck = false;
-        }
-        else if (previousKeyCheck == false)
-        {
-            previousKeyCheck = true;
-        }
-    }
-    boardExtenderx;
+            boardExtenderx;
             boardExtedery;
-            if (player1.playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize) and player1.playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize))+1)/2) < N)
+            if (playerx > ((ofGetScreenWidth()-120-(squareSize/2))/(squareSize))/2-1 and (ofGetScreenWidth()-ofGetScreenWidth()/16) < N*(squareSize) and playerx + ((((ofGetScreenWidth()-ofGetScreenWidth()/16-(squareSize/2))/(squareSize))+1)/2) < N)
             {
-                boardExtenderx=(player1.playerx-(((ofGetScreenWidth()-ofGetScreenWidth()/16-squareSize/2)/(squareSize))/2))*-1;
+                boardExtenderx=(playerx-(((ofGetScreenWidth()-ofGetScreenWidth()/16-squareSize/2)/(squareSize))/2))*-1;
             }
-            if (player1.playery > (ofGetScreenHeight()/(squareSize))/2-1 and ofGetScreenHeight() < N*(squareSize) and player1.playery + (((ofGetScreenHeight()/(squareSize))-1)/2) < N)
+            if (playery > (ofGetScreenHeight()/(squareSize))/2-1 and ofGetScreenHeight() < N*(squareSize) and playery + (((ofGetScreenHeight()/(squareSize))-1)/2) < N)
             {
-                boardExtedery=(player1.playery-((ofGetScreenHeight()/squareSize)/2))*-1;
+                boardExtedery=(playery-((ofGetScreenHeight()/squareSize)/2))*-1;
             }
-
     //sprites.clear(); //Makes sure that the vector does not overload on sprites. This will delete the previous sprites so that there will be room for new ones.
     for (int i = 0; i < N; i++)
     {
@@ -117,6 +95,7 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         matrix.push_back(row); // push each row after you fill it
         //level.push_back(row);
     }
+    matrix[0][0]=1;
     int i=0;
     int j=0;
     while ((i<keyX))
@@ -216,21 +195,81 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
         sprites.push_back(row);
     }
  }
- void player::playerController (int key,Matrix matrix,int N)
+ void bomb::bombTimer()
  {
+     //if(bombTime<(ofGetElapsedTimef()))
+     //{
+     //    bombTime++;
+     //}
+     //if (bombTime>=3)
+     //{
+     //    bombtime
+     //}
+ }
+ void player::attack(vector<Enemy> enemylist,int key)
+ {
+    if(key=='f')
+    {
+         if (previousKey == 0)// d
+         {
 
-     if (((key == 'd') or (key == 'D')) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0) and (matrix[playerx + 1][playery] != 2))
+             for (int i=0; i<enemylist.size(); i++)
+             {
+                 if ((playery==enemylist[i].EnemyY)and((enemylist[i].EnemyX-playerx)>0))
+                 {
+                     cout<<"dHit"<<endl;
+                 }
+             }
+         }
+         else if (previousKey == 2)//w
+         {
+             for (int i=0; i<enemylist.size(); i++)
+             {
+                 if ((playerx==enemylist[i].EnemyX)and((enemylist[i].EnemyY-playery)<0))
+                 {
+                     cout<<"wHit"<<endl;
+                 }
+             }
+         }
+         else if (previousKey == 1)//a
+         {
+             for (int i=0; i<enemylist.size(); i++)
+             {
+                 if ((playery==enemylist[i].EnemyY)and((enemylist[i].EnemyX-playerx)<0))
+                 {
+                     cout<<"aHit"<<endl;
+                 }
+             }
+         }
+         else if (previousKey == 3)//s
+         {
+             for (int i=0; i<enemylist.size(); i++)
+             {
+                 cout<<enemylist[i].EnemyX<<endl;
+                 if ((playerx==enemylist[i].EnemyX)and((enemylist[i].EnemyY-playery)>0))
+                 {
+                     cout<<"sHit"<<endl;
+                 }
+             }
+         }
+    }
+ }
+ void player::playerController (int key,Matrix matrix,int N)
+{
+    if (((key == 'd') or (key == 'D')) and (playerx < N - 1) and (matrix[playerx + 1][playery] !=0) and (matrix[playerx + 1][playery] != 2))
     {
         if (matrix[playerx + 1][playery] == 3 and hasKey == false)
         {
             hasKey = true;
             variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
-        startFrame=4;
-        endFrame=6;
         playerx++;
-        //startFrame=0;
-        //endFrame=2;
+    }
+    if ((key == 'd') or (key == 'D'))
+    {
+        previousKey=0;
+        startFrame=5;
+        endFrame=7;
     }
     if (((key == 'a') or (key == 'A')) and (playerx > 0) and (matrix[playerx - 1][playery] !=0) and (matrix[playerx - 1][playery] != 2))
     {
@@ -239,11 +278,13 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             hasKey = true;
             variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
-        startFrame=8;
-        endFrame=10;
         playerx--;
-        //startFrame=3;
-        //endFrame=5;
+    }
+    if ((key == 'a') or (key == 'A'))
+    {
+        previousKey=1;
+        startFrame=10;
+        endFrame=12;
     }
     if (((key == 'w') or (key == 'W')) and (playery > 0) and (matrix[playerx][playery - 1] != 0) and (matrix[playerx][playery - 1] != 2))
     {
@@ -252,11 +293,13 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             hasKey = true;
             variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
-        startFrame=12;
-        endFrame=14;
         playery--;
-        //startFrame=6;
-        //endFrame=8;
+    }
+    if ((key == 'w') or (key == 'W'))
+    {
+        previousKey=2;
+        startFrame=15;
+        endFrame=17;
     }
     if (((key == 's') or (key == 'S')) and (playery < N - 1) and (matrix[playerx][playery + 1] != 0) and (matrix[playerx][playery + 1] != 2))
     {
@@ -265,19 +308,26 @@ void board::boardDrawer (int key,int moves,bool pressedCheck)
             hasKey = true;
             variableForGettingRidOfKeySpaceWhenYouCollectIt++;
         }
+        playery++;
+    }
+    if ((key == 's') or (key == 'S'))
+    {
+        previousKey=3;
         startFrame=0;
         endFrame=2;
-        playery++;
-        //startFrame=9;
-        //endFrame=11;
     }
-
- }
+}
 void Enemy::aiMovement (int key,int playerx,int playery,int N,Matrix matrix,int moves)
  {
-     if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd') or (key == 'W') or (key =='A') or (key == 'S') or ( key == 'D'))
+     //if((key == 'w') or (key =='a') or (key == 's') or ( key == 'd') or (key == 'W') or (key =='A') or (key == 'S') or ( key == 'D'))
+     if(enemytimer<(ofGetElapsedTimeMillis()/300))
      {
-         if ((abs(playerx-EnemyX) < 3) and (abs(playery-EnemyY) < 3))
+         enemytimer++;
+         if (((abs(playerx-EnemyX) <= 1) and (abs(playery-EnemyY) < 1))or((abs(playerx-EnemyX) < 1) and (abs(playery-EnemyY) <= 1)))
+         {
+             Phealth=true;
+         }
+         else if ((abs(playerx-EnemyX) < 3) and (abs(playery-EnemyY) < 3))
          {
             if (playerx > EnemyX and (EnemyX<N-1) and (matrix[EnemyX+1][EnemyY] != 0) and (matrix[EnemyX+1][EnemyY] != 2))
             {
@@ -340,25 +390,20 @@ void Enemy::aiMovement (int key,int playerx,int playery,int N,Matrix matrix,int 
             }
          }
      }
-     //x++;
  }
 void level::Setup()
 {
     CharacterSpriteRenderer = new ofxSpriteSheetRenderer(1, 1000, 0, 60);
-    CharacterSpriteRenderer->loadTexture("Mummy_Sprite_Sheet.png", 240, GL_NEAREST);
-    //dTileSprite * mummySprite = sprite;//Creates a sprite where the exit will be
+    CharacterSpriteRenderer->loadTexture("Purple_Mummy_Sheet.png", 300, GL_NEAREST);
 
     dTileSprite * mummySprite = new dTileSprite();//Creates a sprite where the exit will be
     mummySprite->animation = blockAnimation;
-    //blockAnimation.frame = 3;
-    //mummySprite->animation.frame_skip = 1;
 
-    mummySprite->animation.index = 4;
-    mummySprite->animation.final_index = 6;
+    mummySprite->animation.index = 20;
+    mummySprite->animation.final_index = 21;
     mummySprite->animation.total_frames = 3;
 
     sprite.push_back(mummySprite); //add our sprite to the vector/
-
 
     ofEnableAlphaBlending();
     board1.tileSetup();
@@ -366,25 +411,18 @@ void level::Setup()
 }
  void level::gameplay()
 {
-
     CharacterSpriteRenderer->clear();
     CharacterSpriteRenderer->update(ofGetElapsedTimeMillis());
 
-
-    board1.boardDrawer(key,moves,pressedCheck);
+    board1.boardDrawer(player1.playerx,player1.playery,key,moves,pressedCheck);
     enemies1.drawer(board1.boardExtenderx,board1.squareSize,board1.gapSize,board1.boardExtedery);
 
-    //if (board1.player1.startFrame<=board1.player1.endFrame)
-    //{
-    //    board1.player1.startFrame++;
-    //}
-    //sprite[0]->animation.frame = board1.player1.startFrame;
-    sprite[0]->animation.index = board1.player1.startFrame;
-    sprite[0]->animation.final_index = board1.player1.endFrame;
-    CharacterSpriteRenderer->addTile(&sprite[0]->animation,(board1.player1.playerx+board1.boardExtenderx) * (board1.squareSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(board1.player1.playery+board1.boardExtedery) * (board1.squareSize));
+    sprite[0]->animation.index = player1.startFrame;
+    sprite[0]->animation.final_index = player1.endFrame;
 
+    CharacterSpriteRenderer->addTile(&sprite[0]->animation,(player1.playerx+board1.boardExtenderx) * (board1.squareSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(player1.playery+board1.boardExtedery) * (board1.squareSize));
 
-    board1.statbar1.mainbar(board1.player1.health,board1.player1.mana,board1.player1.steps,board1.player1.hasKey);
+    board1.statbar1.mainbar(player1.health,player1.mana,player1.steps,player1.hasKey);
 
     if (ofGetScreenHeight() % 60 != 0)//these two if statements are here to make the screen adjust for weird resoluitions
     {
@@ -397,63 +435,86 @@ void level::Setup()
         ofRect(0,0,((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),ofGetScreenHeight());
     }
 
-
     CharacterSpriteRenderer->draw(); //Draws the sprites
 }
 void level::keyPressed(int key)
 {
     moves++;
-    if (pressedCheck == true)
+    sprite[0]->animation.total_frames = 3;
+    player1.playerController(key,board1.matrix,board1.N);
+    player1.attack(enemies1.enemylist,key);
+    if (player1.hasKey == true and player1.variableForGettingRidOfKeySpaceWhenYouCollectIt == 1)
     {
-
-        pressedCheck = false;
+        board1.matrix[player1.playerx][player1.playery] = 1;
+        player1.variableForGettingRidOfKeySpaceWhenYouCollectIt--;
     }
-    else if (pressedCheck == false)
-    {
-        pressedCheck = true;
-    }
-    if (board1.player1.hasKey == true)
+    if (player1.hasKey == true)
     {
         //open door
         board1.sprites[board1.exitX][board1.exitY]->animation.frame = 3;
         board1.sprites[board1.keyX][board1.keyY]->animation.frame = 1;
     }
-    else if (board1.player1.hasKey == false)
+    else if (player1.hasKey == false)
     {
         //closed door
         board1.sprites[board1.exitX][board1.exitY]->animation.frame = 4;
         board1.sprites[board1.keyX][board1.keyY]->animation.frame = 5;
     }
-    enemies1.updater(key,board1.player1.playerx,board1.player1.playery,board1.N,board1.matrix,moves,board1.player1.health);
-    if (enemies1.playerDamaged==true)
-    {
-        board1.player1.health--;
-        enemies1.playerDamaged=false;
-    }
-
-
-
+    //cout<<"enemyx"<<enemies1.enemylist[4].EnemyX<<"enemyy"<<enemies1.enemylist[4].EnemyY<<endl;
+}
+void level::keyReleased(int key)
+{
+    sprite[0]->animation.total_frames = 2;
+    player1.startFrame=20;
+    player1.endFrame = 21;
 }
 void level::mousePressed(int x, int y)
 {
-    if (board1.matrix[x][y] == 2 and board1.player1.mana != 0 and (((board1.player1.playerx+1 == x or board1.player1.playerx-1== x) and (board1.player1.playery == y or board1.player1.playery == y)) or ((board1.player1.playerx == x or board1.player1.playerx== x) and (board1.player1.playery-1 == y or board1.player1.playery+1 == y))))//check if destructable block and then check if the player has mana
+    if (board1.matrix[x][y] == 2 and player1.mana != 0 and (((player1.playerx+1 == x or player1.playerx-1== x) and (player1.playery == y or player1.playery == y)) or ((player1.playerx == x or player1.playerx== x) and (player1.playery-1 == y or player1.playery+1 == y))))//check if destructable block and then check if the player has mana
     {
         board1.matrix[x][y] = 1;//destroy the destructable block
-        board1.player1.mana--;//lose mana when destroyed a block
+        player1.mana--;//lose mana when destroyed a block
         board1.sprites[x][y]->animation.frame = 1;
     }
+    for (int i=0; i<enemies1.enemylist.size(); i++)
+    {
+        if ((x==enemies1.enemylist[i].EnemyX)and(y==enemies1.enemylist[i].EnemyY))
+        {
+            player1.mana--;
+            enemies1.enemylist[i].health=0;
+            //enemies1.enemylist.erase(enemies1.enemylist.begin()+i);
+        }
+    }
+}
+void level::updater()
+{
+    //board1.player1.health=
+    for (int i=0; i<enemies1.enemylist.size(); i++)
+    {
+        if (enemies1.enemylist[i].Phealth==true)
+        {
+            if (player1.health>0)
+            {
+                player1.health--;
+                //break;
+            }
+            enemies1.enemylist[i].Phealth=false;
+        }
+    }
+    enemies1.updater(key,player1.playerx,player1.playery,board1.N,board1.matrix,moves,player1.health);
 }
 void Enemies::drawer(int boardExtenderx,int squareSize,int gapSize,int boardExtedery)
 {
     EnemySpriteRenderer->clear();
     EnemySpriteRenderer->update(ofGetElapsedTimeMillis());
-    //ofSetColor(255,99,255);
+
     for(int i=0; i<enemylist.size(); i++)
     {
         sprites[i]->animation.index = enemylist[i].startFrame;
         sprites[i]->animation.final_index = enemylist[i].endFrame;
         EnemySpriteRenderer->addTile(&sprites[i]->animation,(enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize));
-        //ofRect((enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize),squareSize,squareSize);
+        ofSetColor(225,0,0);
+        ofRect((enemylist[i].EnemyX+boardExtenderx) * (squareSize + gapSize)+((ofGetScreenWidth()-(ofGetScreenWidth()/16))%60),(enemylist[i].EnemyY+boardExtedery) * (squareSize + gapSize),10,enemylist[i].health*10);
     }
     EnemySpriteRenderer->draw();
 }
@@ -461,7 +522,6 @@ void Enemies::setup(int N)
 {
     EnemySpriteRenderer = new ofxSpriteSheetRenderer(1, 1000, 0, 60);
     EnemySpriteRenderer->loadTexture("Scarab_Sheet.png", 240, GL_NEAREST);
-    //dTileSprite * mummySprite = sprite;//Creates a sprite where the exit will be
 
     ofEnableAlphaBlending();
 
@@ -487,21 +547,16 @@ void Enemies::updater(int key,int playerx,int playery,const int N,Matrix matrix,
         enemiesX=enemylist[i].EnemyX;
         enemiesY=enemylist[i].EnemyY;
         enemylist[i].aiMovement(key,playerx,playery,N,matrix,moves);
+        if(enemylist[i].health==0)
+        {
+            enemylist.erase(enemylist.begin()+i);
+        }
         for (int j=0; j<enemylist.size(); j++)
         {
             if ((enemylist[i].EnemyX==enemylist[j].EnemyX)and(enemylist[i].EnemyY==enemylist[j].EnemyY)and(i!=j))
             {
                 enemylist[i].EnemyX=enemiesX;
                 enemylist[i].EnemyY=enemiesY;
-            }
-            if ((enemylist[i].EnemyX==playerx)and(enemylist[i].EnemyY==playery)and(i!=j))
-            {
-                enemylist[i].EnemyX=enemiesX;
-                enemylist[i].EnemyY=enemiesY;
-                if (health>0)
-                {
-                    playerDamaged=true;
-                }
             }
         }
     }
@@ -519,13 +574,16 @@ void Game::levelSetup()
 }
 void Game::newLevel()
 {
-    if ((levelList[currentLevel].board1.exitX==levelList[currentLevel].board1.player1.playerx) and (levelList[currentLevel].board1.exitY==levelList[currentLevel].board1.player1.playery)and(levelList[currentLevel].board1.player1.hasKey == true))
+    if ((levelList[currentLevel].board1.exitX==levelList[currentLevel].player1.playerx) and (levelList[currentLevel].board1.exitY==levelList[currentLevel].player1.playery)and(levelList[currentLevel].player1.hasKey == true))
     {
         levelList[currentLevel].board1.sprites.clear();
         levelList[currentLevel].sprite.clear();
         levelList[currentLevel].enemies1.sprites.clear();
         currentLevel++;
-        //levelList.pop_back();
+        for (int i=0; i<levelList[currentLevel].enemies1.enemylist.size(); i++)
+        {
+            levelList[currentLevel].enemies1.enemylist[i].enemytimer=ofGetElapsedTimeMillis()/300;
+        }
     }
 }
 //--------------------------------------------------------------
@@ -538,7 +596,7 @@ void ofApp::setup()
 
 //--------------------------------------------------------------
 void ofApp::update()
-{
+{game1.levelList[game1.currentLevel].updater();
 }
 
 //--------------------------------------------------------------
@@ -550,6 +608,7 @@ void ofApp::draw()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
+        //cout<<ofGetElapsedTimeMillis()<<endl;
         game1.levelList[game1.currentLevel].key = key;
         game1.levelList[game1.currentLevel].keyPressed(key);
         game1.newLevel();
@@ -558,11 +617,12 @@ void ofApp::keyPressed(int key)
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key)
 {
+    game1.levelList[game1.currentLevel].keyReleased(key);
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
+void ofApp::mouseMoved(int x, int y )
+{
 }
 
 //--------------------------------------------------------------
@@ -583,7 +643,6 @@ void ofApp::mousePressed(int x, int y, int button)
 void ofApp::mouseReleased(int x, int y, int button){
 
 }
-
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
 
