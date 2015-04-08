@@ -3,18 +3,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    img.loadImage("water.jpg");
-
-
-
-
-
-
-
-}
-
-//--------------------------------------------------------------
-void ofApp::update(){
+    bg.loadImage("water.jpg");
+    sound.loadImage("Sound.png");
+    mute.loadImage("Mute.png");
 
     winheight =ofGetWindowHeight();
     winwidth =ofGetWindowWidth();
@@ -23,10 +14,15 @@ void ofApp::update(){
     interiorpadding =winwidth/20;
     textsize =(winheight*winwidth)*.000035;
     smalltextsize = (winheight*winwidth)*.000017;
+    smalltextsize2 = (winheight*winwidth)*.000012;
+
 
     titlefont.loadFont("DALEK___.ttf",winheight/15);
     textfont.loadFont("DIOGENES.ttf",textsize);
     smalltextfont.loadFont("DIOGENES.ttf",smalltextsize);
+    smalltextfont2.loadFont("DIOGENES.ttf",smalltextsize2);
+
+
 
 //    Titlecontainer.x =(winwidth*.175);
 //    Titlecontainer.y = TBpadding;
@@ -53,6 +49,32 @@ void ofApp::update(){
     Options.y = TBpadding/3;
     Options.width = winwidth*.08;
     Options.height = winheight*.04;
+
+    Optionsdropdown.x =Options.x-winwidth*.08;
+    Optionsdropdown.y =Options.y+Options.height-winheight*.02;
+    Optionsdropdown.width =winwidth*.08+Options.width;
+    Optionsdropdown.height =winheight*.3;
+
+    Purplegender.x = Optionsdropdown.x+Optionsdropdown.width*.0621;
+    Purplegender.y = Orangegender.y = Greengender.y = Optionsdropdown.y+Optionsdropdown.height*.7;
+    Purplegender.height = Orangegender.height = Greengender.height = Optionsdropdown.width*.25;
+    Purplegender.width = Orangegender.width = Greengender.width = Purplegender.height;
+
+    Orangegender.x = Purplegender.x+Purplegender.width+Optionsdropdown.width*.0621;
+
+    Greengender.x = Orangegender.x+Orangegender.width+Optionsdropdown.width*.0621;
+
+    fxpixels=fxpercent*(Optionsdropdown.width*.5);
+    fxslider.width = musicslider.width = masterslider.width = Optionsdropdown.width*.03;
+    fxslider.height = musicslider.height = masterslider.height = Optionsdropdown.height*.06;
+    fxslider.x = Optionsdropdown.x+Optionsdropdown.width*.2+fxpixels;
+    fxslider.y =Optionsdropdown.y+Optionsdropdown.height*.22;
+
+    musicslider.x = Optionsdropdown.x+Optionsdropdown.width*.2+fxpixels;
+    musicslider.y =Optionsdropdown.y+Optionsdropdown.height*.32;
+
+    masterslider.x = Optionsdropdown.x+Optionsdropdown.width*.2+fxpixels;
+    masterslider.y =Optionsdropdown.y+Optionsdropdown.height*.42;
 
 
 //-----------------------Adventurer option button-------------------------------------
@@ -86,35 +108,51 @@ void ofApp::update(){
     SinglePlayer2.y = (SinglePlayer1.y+(.05*SinglePlayer1.height));
     SinglePlayer2.width = Builder2.width;
     SinglePlayer2.height = Builder2.height;
+
+
+
+
+
+
+}
+
+//--------------------------------------------------------------
+void ofApp::update(){
+
+
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-img.resize(winwidth,winheight);
- img.draw(0,0);
+//    if (optionson ==true){
+//        ofSetColor(250,250,250,180);
+//        }
+//        bg.resize(winwidth,winheight);
+//        bg.draw(0,0);
 
     ofColor colorOne;
     ofColor colorTwo;
 
-    colorOne.set (0, 0, 0);
-    colorTwo.set (255, 100, 50);
+    colorOne.set (0, 0, 0,500-allopacity);
+    colorTwo.set (255, 100, 50, 500-allopacity);
 
-   // ofBackgroundGradient(colorTwo, colorOne, OF_GRADIENT_CIRCULAR);
+        ofBackgroundGradient(colorTwo, colorOne, OF_GRADIENT_CIRCULAR);
 
-    ofSetColor(230,230,230,10);
-    ofRectRounded(Titlecontainer, 20);
+//    ofSetColor(230,230,230,10-allopacity);
+//    ofRectRounded(Titlecontainer, 20);
 
-    ofSetColor(180,180,180,20);
+    ofSetColor(180,180,180,containeropacity);
     ofRectRounded(OnePcontainer, 16);
 
-    ofSetColor(180,180,180,20);
+    ofSetColor(180,180,180,containeropacity);
     ofRectRounded(TwoPcontainer, 16);
 
-    ofSetColor(100,100,100,Aboutopacity);
-    ofRectRounded(About,8);
+    ofSetColor(40,40,40,Aboutopacity-allopacity);
+    ofRectRounded(About,5);
 
-    ofSetColor(100,100,100,Optionsopacity);
-    ofRectRounded(Options,8);
+    ofSetColor(60,60,60,Optionsopacity);
+    ofRectRounded(Options,5);
 
 
 //----------------------Adventurer option button-------------------------------
@@ -126,10 +164,10 @@ img.resize(winwidth,winheight);
     Adventurerint.g= 40;
     Adventurerint.b= 40;
 
-    ofSetColor(Adventurerext,AdventurerExtopacity);
+    ofSetColor(Adventurerext,AdventurerExtopacity-allopacity);
     ofRectRounded(Adventurer1, 8);                                   //fix the corners
 
-    ofSetColor(Adventurerint,AdventurerIntopacity);
+    ofSetColor(Adventurerint,AdventurerIntopacity-allopacity);
     ofRectRounded(Adventurer2, 8);
 
 //----------------------Builder option button-------------------------------
@@ -142,10 +180,10 @@ img.resize(winwidth,winheight);
     Builderint.g= 40;
     Builderint.b= 40;
 
-    ofSetColor(Builderext,BuilderExtopacity);
+    ofSetColor(Builderext,BuilderExtopacity-allopacity);
     ofRectRounded(Builder1, 8);
 
-    ofSetColor(Builderint,BuilderIntopacity);
+    ofSetColor(Builderint,BuilderIntopacity-allopacity);
     ofRectRounded(Builder2, 8);
 
 
@@ -160,11 +198,52 @@ img.resize(winwidth,winheight);
     Singleint.g= 40;
     Singleint.b= 40;
 
-    ofSetColor(Singleext,SingleExtopacity);
+    ofSetColor(Singleext,SingleExtopacity-allopacity);
     ofRectRounded(SinglePlayer1, 8);
 
-    ofSetColor(Singleint,SingleIntopacity);
+    ofSetColor(Singleint,SingleIntopacity-allopacity);
     ofRectRounded(SinglePlayer2, 8);
+
+
+//----------------------Options button-------------------------------
+    if (optionson == true)
+    {   if (fxpressed ==true){
+        cout<<"true"<<endl;
+        }
+        else {
+            cout<<"flase"<<endl;
+        }
+
+        ofSetColor(60,60,60);
+        ofRectRounded (Optionsdropdown,2);
+        ofSetLineWidth(3);
+        ofSetColor(200,200,200);
+
+
+
+        smalltextfont.drawString("Sound",(Optionsdropdown.x+.5*Optionsdropdown.width-(.6*smalltextfont.getSize()*2.5)),(Optionsdropdown.y+.15*Optionsdropdown.height+(smalltextfont.getSize()/2)));
+        smalltextfont2.drawString("FX",(Optionsdropdown.x+.1*Optionsdropdown.width-(.6*smalltextfont2.getSize()*1)),(Optionsdropdown.y+.25*Optionsdropdown.height+(smalltextfont2.getSize()/2)));
+        ofLine(Optionsdropdown.x+Optionsdropdown.width*.2,Optionsdropdown.y+Optionsdropdown.height*.25,Optionsdropdown.x+Optionsdropdown.width*.9,Optionsdropdown.y+Optionsdropdown.height*.25);
+        ofRectRounded(fxslider,1);
+        // MUSIC NOTE
+        ofLine(Optionsdropdown.x+Optionsdropdown.width*.2,Optionsdropdown.y+Optionsdropdown.height*.35,Optionsdropdown.x+Optionsdropdown.width*.9,Optionsdropdown.y+Optionsdropdown.height*.35);
+        ofRectRounded(musicslider,1);
+        sound.resize(smalltextsize2*1.5, smalltextsize2*1.5);
+        sound.draw((Optionsdropdown.x+.1*Optionsdropdown.width-(.5*smalltextsize2*1.5*1)),(Optionsdropdown.y+.45*Optionsdropdown.height-(smalltextsize2*1.5)/2));
+        ofLine(Optionsdropdown.x+Optionsdropdown.width*.2,Optionsdropdown.y+Optionsdropdown.height*.45,Optionsdropdown.x+Optionsdropdown.width*.9,Optionsdropdown.y+Optionsdropdown.height*.45);
+        ofRectRounded(masterslider,1);
+
+        smalltextfont.drawString("Gender",(Optionsdropdown.x+.5*Optionsdropdown.width-(.6*smalltextfont.getSize()*3)),(Optionsdropdown.y+.6*Optionsdropdown.height+(smalltextfont.getSize()/2)));
+         ofSetColor(142,5,255);
+        ofRect(Purplegender);
+         ofSetColor(255,97,0);
+        ofRect(Orangegender);
+         ofSetColor(19,86,19);
+        ofRect(Greengender);
+    }
+    else{
+        ofSetLineWidth(0);
+    }
 
 //-----------------------------------BUTTON TEXT-------------------------------------------
     ofSetColor(210,210,210);
@@ -202,7 +281,7 @@ void ofApp::mouseMoved(int x, int y ){
 //-----------------------------HOVER FEATURE------------------------------------------
 
     //adventurer button
-    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height))){
+    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height)) and optionson ==false){
         AdventurerExtopacity=120;
         AdventurerIntopacity=500;
         advred=50;
@@ -214,7 +293,7 @@ void ofApp::mouseMoved(int x, int y ){
     }
 
     //builder button
-    if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height))){
+    if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height)) and optionson ==false){
         BuilderExtopacity=120;
         BuilderIntopacity=500;
         bldrred=50;
@@ -226,7 +305,7 @@ void ofApp::mouseMoved(int x, int y ){
     }
 
     //single player button
-    if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height))){
+    if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height)) and optionson ==false){
         SingleExtopacity=120;
         SingleIntopacity=500;
         singred=50;
@@ -237,7 +316,7 @@ void ofApp::mouseMoved(int x, int y ){
         singred=40;
     }
     //about button
-    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height))){
+    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height)) and optionson ==false){
         Aboutopacity=40;
     }
     else{
@@ -245,80 +324,168 @@ void ofApp::mouseMoved(int x, int y ){
     }
 
     //options button
-    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))){
+    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))and optionson ==false){
         Optionsopacity=40;
     }
-    else{
+    else if (optionson ==false){
         Optionsopacity=20;
     }
+    else if (optionson ==true){
+        Optionsopacity=2000;
+    }
+
+    //sliders
+    //fx slider
 
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
 
+if (fxpressed ==true){
+        fxslider.x = x-.025*Optionsdropdown.width;
+        if (fxslider.x <Optionsdropdown.x+Optionsdropdown.width*.2){
+            fxslider.x =Optionsdropdown.x+Optionsdropdown.width*.2;
+        }
+        if (fxslider.x >Optionsdropdown.x+Optionsdropdown.width*.9){
+            fxslider.x =Optionsdropdown.x+Optionsdropdown.width*.9;
+        }
+        fxpixels =fxslider.x-Optionsdropdown.x+Optionsdropdown.width*.2;
+        fxpercent = (fxpixels/((Optionsdropdown.x+Optionsdropdown.width*.9)-(Optionsdropdown.x+Optionsdropdown.width*.2)));
+    }
+if (musicpressed ==true){
+        musicslider.x = x-.025*Optionsdropdown.width;
+        if (musicslider.x <Optionsdropdown.x+Optionsdropdown.width*.2){
+            musicslider.x =Optionsdropdown.x+Optionsdropdown.width*.2;
+        }
+        if (musicslider.x >Optionsdropdown.x+Optionsdropdown.width*.9){
+            musicslider.x =Optionsdropdown.x+Optionsdropdown.width*.9;
+        }
+        musicpixels =musicslider.x-Optionsdropdown.x+Optionsdropdown.width*.2;
+        musicpercent = (musicpixels/((Optionsdropdown.x+Optionsdropdown.width*.9)-(Optionsdropdown.x+Optionsdropdown.width*.2)));
+    }
+if (masterpressed ==true){
+        masterslider.x = x-.025*Optionsdropdown.width;
+        if (masterslider.x <Optionsdropdown.x+Optionsdropdown.width*.2){
+            masterslider.x =Optionsdropdown.x+Optionsdropdown.width*.2;
+        }
+        if (masterslider.x >Optionsdropdown.x+Optionsdropdown.width*.9){
+            masterslider.x =Optionsdropdown.x+Optionsdropdown.width*.9;
+        }
+        masterpixels =masterslider.x-Optionsdropdown.x+Optionsdropdown.width*.2;
+        masterpercent = (masterpixels/((Optionsdropdown.x+Optionsdropdown.width*.9)-(Optionsdropdown.x+Optionsdropdown.width*.2)));
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height))){
+    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height)) and optionson ==false){
         AdventurerExtopacity=200;
         AdventurerIntopacity=500;
         advred=100;
     }
-     if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height))){
+     if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height)) and optionson ==false){
         BuilderExtopacity=200;
         BuilderIntopacity=500;
         bldrred=100;
     }
-     if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height))){
+     if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height)) and optionson ==false){
         SingleExtopacity=200;
         SingleIntopacity=500;
         singred=100;
     }
     //about button
-    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height))){
+    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height)) and optionson ==false){
         Aboutopacity=200;
     }
-
     //options button
-    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))){
-        Optionsopacity=200;
+    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height)) and optionson ==false){
+        Optionsopacity=2000;
+        allopacity=30;
+        containeropacity =10;
+        optionson =true;
     }
+    else if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height)) and optionson ==true){
+        Optionsopacity=200;
+        allopacity =0;
+        containeropacity =20;
+        optionson =false;
+    }
+    //sliders
+    //fx slider
+    if (optionson ==true and (x>fxslider.x) and (x<(fxslider.x+fxslider.width)) and (y>fxslider.y) and (y<(fxslider.y+fxslider.height))){
+                fxpressed =true;
+    }
+    else {
+            fxpressed =false;
+        }
 
+    //music slider
+    if ((x>musicslider.x) and (x<(musicslider.x+musicslider.width)) and (y>musicslider.y) and (y<(musicslider.y+musicslider.height))){
+        if (optionson ==true){
+                musicpressed =true;
+    }
+        else {
+            musicpressed =false;
+    }
+    }
+    //master slider
+    if (optionson ==true and (x>masterslider.x) and (x<(masterslider.x+masterslider.width)) and (y>masterslider.y) and (y<(masterslider.y+masterslider.height))){
+        masterpressed =true;
+    }
+    else {
+        masterpressed =false;
+    }
+    //ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    //ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    //ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
 
-    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height))){
+    if ((x>Adventurer1.x) and (x<(Adventurer1.x+Adventurer1.width)) and (y>Adventurer1.y) and (y<(Adventurer1.y+Adventurer1.height)) and optionson ==false){
         AdventurerExtopacity=120;
         AdventurerIntopacity=500;
         advred=50;
     }
-    if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height))){
+    if ((x>Builder1.x) and (x<(Builder1.x+Builder1.width)) and (y>Builder1.y) and (y<(Builder1.y+Builder1.height)) and optionson ==false){
         BuilderExtopacity=120;
         BuilderIntopacity=500;
         bldrred=50;
     }
-    if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height))){
+    if ((x>SinglePlayer1.x) and (x<(SinglePlayer1.x+SinglePlayer1.width)) and (y>SinglePlayer1.y) and (y<(SinglePlayer1.y+SinglePlayer1.height)) and optionson ==false){
         SingleExtopacity=120;
         SingleIntopacity=500;
         singred=50;
     }
 
-    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height))){
+    if ((x>About.x) and (x<(About.x+About.width)) and (y>About.y) and (y<(About.y+About.height)) and optionson ==false){
         Aboutopacity=40;
     }
 
     //options button
-    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))){
-        Optionsopacity=40;
+    if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))and (optionson ==true)){
+        Optionsopacity=1000;
+    }
+    else if ((x>Options.x) and (x<(Options.x+Options.width)) and (y>Options.y) and (y<(Options.y+Options.height))and (optionson ==false)){
+        Optionsopacity=20;
+    }
+
+    if (fxpressed ==true){
+        fxpressed =false;
+    }
+    if (musicpressed ==true){
+        musicpressed =false;
+    }
+    if (masterpressed ==true){
+        masterpressed =false;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
+
 
 }
 
