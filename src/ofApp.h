@@ -18,6 +18,12 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+		void singleplayer();
+		void builder();
+		void adventurer();
+
+		bool optionson =false;
+		bool abouton =false;
 
 		int winheight;
 		int winwidth;
@@ -26,6 +32,9 @@ class ofApp : public ofBaseApp{
 		int interiorpadding;
 		int textsize;
 		int smalltextsize;
+		int smalltextsize2;
+
+
 
 		ofColor Adventurerext;
 		ofColor Adventurerint;
@@ -45,6 +54,18 @@ class ofApp : public ofBaseApp{
         int advred=40;
         int bldrred=40;
         int singred=40;
+        int allopacity =0;
+        int containeropacity =20;
+
+        int fxpercent=.5;
+        int fxpixels;
+        bool fxpressed =false;
+        int musicpercent =50;
+        int musicpixels;
+        bool musicpressed =false;
+        int masterpercent=50;
+        int masterpixels;
+        bool masterpressed =false;
 
         ofRectangle TwoPcontainer;
         ofRectangle OnePcontainer;
@@ -57,13 +78,23 @@ class ofApp : public ofBaseApp{
 		ofRectangle Builder2;
 		ofRectangle About;
 		ofRectangle Options;
+		ofRectangle Optionsdropdown;
+		ofRectangle Orangegender;
+		ofRectangle Purplegender;
+		ofRectangle Greengender;
+		ofRectangle fxslider;
+		ofRectangle musicslider;
+		ofRectangle masterslider;
 
 		ofTrueTypeFont titlefont;
 		ofTrueTypeFont textfont;
 		ofTrueTypeFont smalltextfont;
+		ofTrueTypeFont smalltextfont2;
 
 
-		ofImage img;
+		ofImage bg;
+		ofImage sound;
+		ofImage mute;
 
 
 };
