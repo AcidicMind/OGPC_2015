@@ -30,10 +30,37 @@ public:
 
 };
 
+class soundTrackPlayer // Plays the soundtrack
+{
+public:
+    int currentTrack = 1;
+    ofSoundPlayer bossTheme;
+    ofSoundPlayer mainTheme;
+    void musicSetup();
+    void musicSelection(int tNumber);
+};
+
 class statbar // Display of various information in a corner hovering above the main screen
 {
 public:
+    void mainBarSetup();
     void mainbar(int health,int mana, int steps,bool hasKey); // function for drawing and updating the statbar's info
+    int onceDraw = 1;
+    ofImage barMid;
+    ofImage barEnd;
+    ofImage barEndLow;
+
+    ofSoundPlayer magicNoise;
+    int manaLossCheck = 10;
+
+    ofSoundPlayer damageNoise;
+    int healthLossCheck = 17;
+
+    ofSoundPlayer pickUpNoise;
+    int keyCheck = 0;
+
+    ofxSpriteSheetRenderer * statBarSpriteRenderer;
+    vector<dTileSprite *> sprites;
 };
 
 
@@ -98,29 +125,36 @@ class Enemies
 class bomb
 {
 public:
-    void bombTimer();
+    void bombTimer(Matrix matrix);
     int bombX=0;
     int bombY=0;
-    int explosionRadius=0;
+    bool bombTimeUp=false;
+    int explosionRadius=1;
     int bombTime=0;
+    int explosionTime=0;
 };
 class player
 {
 public:
     void playerController(int key,Matrix matrix,int N);
-    void attack(vector<Enemy> enemylist,int key);
+    void attack(vector<Enemy> enemylist,int key,Matrix matrix);
+    void bombDrawer(Matrix matrix,int boardExtenderx,int squareSize,int gapSize,int boardExtedery);
+    void bombSpriteSetup();
     void playerDrawer();
+    int attackChoice=0;
     int playerx = 0;
     int playery = 0;
     int variableForGettingRidOfKeySpaceWhenYouCollectIt = 0;
     bool hasKey = false;//do we have the key yet???
-    int health = 100;
+    int health = 10;
     int steps = 0;
     int mana = 10; //magic power
     int startFrame=0;
     int endFrame=0;
     int previousKey=0;
     vector <bomb> bombList;
+    ofxSpriteSheetRenderer * ExplosionSpriteRenderer;
+    vector<dTileSprite *> sprites;
 };
 class level
 {
@@ -136,12 +170,16 @@ public:
     bool setup=true;
     bool pressedCheck = true;
     bool previousKeyCheck = false;
+    int keyTime=0;
     board board1;
     Enemies enemies1;
     player player1;
     ofxSpriteSheetRenderer * CharacterSpriteRenderer;
     vector<dTileSprite *> sprite;
     int i=0;
+
+    int mTrack = 2; //Music Track 2 = boss music
+    soundTrackPlayer soundTrackPlayer1;
 };
 class Game
 {
